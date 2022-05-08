@@ -1,5 +1,4 @@
 #!/bin/bash
-mkdir -p ./html/tech ./html/nontech 
 files=`find ./ -type f -name "*.md" ! -name "README.md" ! -path "./node_modules/*"`
 
 for file in $files;
@@ -11,7 +10,7 @@ do
     mkdir -p $output_dir
   fi
   echo "transforming $file to $output_file.html"
-  node_modules/.bin/markmap $file -o $output_file.html --no-open
+  node_modules/.bin/markmap $file -o $output_file.html --no-open #tr
 done
 
 find ./html -type f -name "*.html" ! -name "index.html" | \
