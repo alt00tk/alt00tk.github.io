@@ -57,7 +57,6 @@
   * ```html
     <!-- 動かない例 -->
     <span>{{ var a = 1; }}</span>
-    <span>{{ if (isOk) { return message;} }}</span>
     ```
 
 
