@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>knowledge</title>
+    <meta charset="UTF-8" />
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+    <!-- Original　CSS -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <div class="contents">
+      <h1>knowledge</h1>
+      <ul class="collapsible" id="list"></ul>
+      <script>
+        const data = ["./html/vue-guide/02-instance.md.html",
+"./html/vue-guide/03-template-syntax.md.html",
+];
+        const list = document.getElementById("list");
+
+        // `data` の整形
+        let map = new Map();
+        data.forEach((item) => {
+          const key = item.split('/')[2];
+          if (map.has(key)) {
+            map.get(key).push(item);
+          } else {
+            map.set(key, [item]);
+          }
+        });
+
+        // DOM要素の生成
+        map.forEach((value, key) => {
+          // --------------------------------------------------
+          // collapsible-headerクラス
+          // --------------------------------------------------
+          // li要素
+          const parent_li = document.createElement('li');
+          // a要素
+          const parent_a = document.createElement('a');
+          parent_a.setAttribute('class', 'collapsible-header');
+          parent_a.textContent = key;
+          parent_li.appendChild(parent_a);
+          // div要素
+          const parent_div = document.createElement('div');
+          parent_div.setAttribute('class', 'collapsible-body');
+          // ul要素
+          const parent_ul = document.createElement('ul');         
+          // --------------------------------------------------
+          // collapsible-bodyクラス
+          // --------------------------------------------------
+          value.forEach((item) => {
+            // li要素
+            const child_li = document.createElement('li');
+            // a要素
+            const child_a = document.createElement('a');
+            child_a.setAttribute('href', item);
+            child_a.setAttribute('target', '_blank');
+            child_a.textContent = item.split('/').slice(-1)[0].split('.')[0];
+            child_li.appendChild(child_a);
+            parent_ul.appendChild(child_li);
+          });
+          parent_div.appendChild(parent_ul);
+          parent_li.appendChild(parent_div);
+          list.appendChild(parent_li);
+        });
+      </script>
+    </div>
+    <script>
+      $(document).ready(function() {
+        $('.collapsible').collapsible();
+      });
+    </script>
+  </body>
+</html>
