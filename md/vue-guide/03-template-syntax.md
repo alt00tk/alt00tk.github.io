@@ -3,12 +3,12 @@
 
 ## 展開
 ### テキスト
-  * Mustanche構文 (二重中括弧) を利用したテキスト展開
-  * 対応するコンポーネントインスタンスから `msg` プロパティの値に置き換えられる_
-  * `msg` プロパティの変更がリアルタイムに反映される_
   * ```html
     <span>Message: {{ msg }}</span>
     ```
+    * Mustanche構文 (二重中括弧) を利用したテキスト展開
+    * 対応するコンポーネントインスタンスから `msg` プロパティの値に置き換えられる_
+    * `msg` プロパティの変更がリアルタイムに反映される_
   * `v-once` ディレクティブ_
     * 一度だけ展開する、データ変更時の更新は行われない
     * 同じノードの他のバインディグにも影響が及ぶので注意_
@@ -46,18 +46,18 @@
 ### JavaScript 式の使用
   * データバインディング内部で JavaScript式を使える_
   * ただし、単一式だけ
-  * ```html
-    <!-- 動く例 -->
-    <span>{{ number + 1 }}</span>
-    <span>{{ isOk ? 'Yes' : 'No' }}</span>
-    <span>{{ message.split('').reverse().join('') }}</span>
-    <div v-bind:id="'list-' + id"></div>
-    ```
+    * ```html
+      <!-- 動く例 -->
+      <span>{{ number + 1 }}</span>
+      <span>{{ isOk ? 'Yes' : 'No' }}</span>
+      <span>{{ message.split('').reverse().join('') }}</span>
+      <div v-bind:id="'list-' + id"></div>
+      ```
   * 文や if文などのフロー制御は使えない
-  * ```html
-    <!-- 動かない例 -->
-    <span>{{ var a = 1; }}</span>
-    ```
+    * ```html
+      <!-- 動かない例 -->
+      <span>{{ var a = 1; }}</span>
+      ```
 
 
 ## ディレクティブ

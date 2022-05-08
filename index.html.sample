@@ -53,7 +53,7 @@
           // --------------------------------------------------
           // collapsible-bodyクラス
           // --------------------------------------------------
-          value.forEach((item) => {
+          value.sort().forEach((item) => {
             // li要素
             const child_li = document.createElement('li');
             // a要素
