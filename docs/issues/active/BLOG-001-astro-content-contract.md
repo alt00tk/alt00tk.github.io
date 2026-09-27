@@ -24,6 +24,7 @@ Astroの静的ビルド基盤と、記事Markdownの必須メタデータおよ�
 - [x] publishedAt は明示的なタイムゾーンを持つ有効なISO 8601日時文字列として検証され、将来日時も有効な値として扱われる。
 - [x] ファイル名をslugとして扱い、正規表現 ^[a-z0-9]+(?:-[a-z0-9]+)*$ に合わない記事名でビルドが失敗する。
 - [x] 異なるディレクトリのMarkdownが同じbasename/slugを持つ場合、両方のファイルパスを示してビルドが失敗する。
+- [x] `src/content/blog`以下のMarkdownを再帰的に読み、URL特殊文字を含むパスも処理する。読込・解析に失敗した場合はそのファイルパスを示してビルドが失敗する。
 - [x] 不正な記事を黙って除外せず、どの入力が無効か分かるエラーをビルド出力に示す。
 
 ## 対象外
@@ -35,7 +36,7 @@ Astroの静的ビルド基盤と、記事Markdownの必須メタデータおよ�
 
 ## 品質境界
 
-記事Markdownを追加して静的ビルドする経路を対象に、必要な入力契約違反をすべてビルド失敗として検出する。公開状態の追加や、不正な記事の自動補正・除外、重複slugの黙認は認めない。
+`src/content/blog`以下のMarkdownを静的ビルドする経路を対象に、必要な入力契約違反をすべてビルド失敗として検出する。パス文字列やloader内の競合で入力を黙って除外すること、公開状態の追加、不正な記事の自動補正、重複slugの黙認は認めない。
 
 ## 実装メモ
 
@@ -47,16 +48,16 @@ Astroの静的ビルド基盤と、記事Markdownの必須メタデータおよ�
 ## 設計判断
 
 - Astro 7.3.5を固定したnpm依存関係と`package-lock.json`を採用した。既存のパッケージ管理制約がなく、AstroのコンテンツAPIと推奨環境を同じ依存グラフで再現できるためである。
-- `astro/loaders`の`glob()`で記事Markdownを読み、`generateId`内でbasenameをslug規則に照合してから記事IDとして返す。通常のコンテンツ同期・ビルド経路で必ず検査されるため、別の事前検査スクリプトは採用しなかった。Zodのstrict schemaで`title`、`description`、`publishedAt`の3項目だけを受け付け、独自`slug`によるID上書きも拒否する。日時はAstro同梱ZodのISO datetime検証に明示的なoffsetを許可し、将来日時を制限しない。
+- `src/content/blog-loader.ts`のbuild-time LoaderでMarkdownを再帰列挙し、通常のファイルシステムパスで読み込む。Astroの`renderMarkdown`と`parseData`で本文を描画しschemaを検証し、`pathToFileURL`で特殊文字を含むファイルパスも正しく扱う。slugはbasenameから作り、重複は記事をstoreへ反映する前に両パス付きで失敗させる。Zodのstrict schemaは`title`、`description`、`publishedAt`だけを受け付け、日時に明示的なtimezoneを要求し、将来日時は制限しない。
 - パッケージ全体に`type: module`を設定しない。Astro設定は`astro.config.mjs`でESMとして読み込める一方、リポジトリのIssue CLIはCommonJSの`issues.js`であり、全体設定をするとそのCLIが起動しなくなるためである。
-- `generateId`内でslugから入力パスへの対応を追跡し、別ファイルが同じbasenameを使う場合は両パスを含むエラーを同期的に投げる。Astroの全体設定でprerender衝突をエラーにする案も試したが、globの並列処理で実証ケースが成功してしまい、記事入力の判定には使えなかった。入力パスが削除済みなら記録を更新できるよう、以前のファイルの存在を確認してから重複とする。
+- Astroの`glob()` loaderはファイルパスをURL化する段階で`#`をfragmentとして扱い、対象Markdownを警告だけで読み飛ばすことがあった。また、重複slugは並列読込の競合で警告に留まる場合があった。標準loaderへの追加設定に依存せず、記事一覧をファイルシステムから列挙してから検査・読込する方が品質境界を直接守れるため、独自loaderを採用した。
 
 ## レビュー指摘
 
-- **IMPL-1（対応）**: 異なるディレクトリのMarkdownが同じbasenameを使うと同じcollection IDになり、Astro既定の動作では警告だけで片方の記事を落としてビルドが成功していた。`generateId`にslugと入力パスの重複検査を置き、`src/content/blog/first/repeated.md`と`src/content/blog/second/repeated.md`の両パスを示してビルドが失敗するようにした。Astro全体のprerender衝突設定では実証ケースが並列処理のため失敗しないこと、記事collection内に別のslug生成経路がないことを確認し、この入力契約の検査を同じloader経路で維持する。
+- **IMPL-1（対応）**: 同basenameのMarkdownはAstro `glob()` loaderの並列読込で警告だけになり、片方が落ちてビルド成功する場合があった。さらに`src/content/blog/a#x/repeated.md`では`#`がURL fragmentとして扱われ、slug検査前に読み飛ばされていた。`src/content/blog-loader.ts`へ再帰列挙・ファイルシステム読込・安全なfile URL生成を集約し、`src/content/blog/a#x/repeated.md`と`src/content/blog/b/repeated.md`の重複、通常の重複、読込不能ファイルを入力パス付きで失敗させた。ブログ記事collectionの入力経路を確認し、別のglob loaderや記事slug生成経路がないことを確かめた。
 
 ## 完了記録
 
-- 変更: Astro 7.3.5、npmマニフェストとロックファイル、静的出力と`https://alt00tk.github.io/`を指定する設定を追加した。Markdown glob collectionで厳密な必須メタデータ、日時、ファイル名slugをビルド時に検証する。
-- 検証: `npm ci --offline --cache=/tmp/blog-001-npm-cache`後の`npm run build`が成功した。使い捨てMarkdownで正常な将来日時、必須値の欠落・空値・型違い、タイムゾーン欠落、不正日付、slugフィールド混入、正規表現に反する7種のファイル名を確認した。追加で、同slugの`src/content/blog/first/repeated.md`と`src/content/blog/second/repeated.md`を置くと両パス付きエラーで失敗し、片方だけなら成功することを確認した。計25ケースが期待どおりで、検証記事は削除済み。
-- レビュー観点: `src/content.config.ts`のbasenameから記事IDへの変換、異なるパスの重複slug検出と元ファイル名の表示、未定義metadataとfrontmatter `slug`の拒否を確認する。`astro.config.mjs`はbaseパスを設けず静的出力にしている。
+- 変更: Astro 7.3.5、npmマニフェストとロックファイル、静的出力と`https://alt00tk.github.io/`を指定する設定を追加した。専用build-time LoaderがMarkdownを再帰的に読み込み、必須metadata、日時、basename slugの一意性をビルド時に検証する。
+- 検証: `npm ci --offline --cache=/tmp/blog-001-npm-cache`後の`npm run build`が成功した。正常日時、metadata欠落・空値・型違い、不正日時、slugフィールド混入、7種の不正slug、通常と`#`入りパスの重複、重複解消後の再ビルド、読込不能Markdownを使い、計29ケースを確認した。重複と読込失敗は関係する両パスまたは該当パスを含むエラーとなり、単独記事と空のサイトはビルド成功した。検証記事は削除済み。
+- レビュー観点: `src/content/blog-loader.ts`の再帰列挙、特殊文字を含むパスの読み込み、全Markdownの読込・解析エラー、重複basename slugの両パス診断を確認する。`src/content.config.ts`は必須metadataのstrict schemaを保ち、`astro.config.mjs`はbaseパスなしの静的出力を指定する。
