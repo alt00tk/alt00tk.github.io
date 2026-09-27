@@ -1,0 +1,6 @@
+import { defineConfig } from "astro/config";
+
+export default defineConfig({
+  site: "https://alt00tk.github.io/",
+  output: "static",
+});
