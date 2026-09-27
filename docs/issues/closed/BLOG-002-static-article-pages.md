@@ -1,6 +1,6 @@
 ---
 id: BLOG-002
-status: active
+status: closed
 type: feature
 depends_on: [BLOG-001]
 ---
@@ -52,7 +52,7 @@ depends_on: [BLOG-001]
 
 ## レビュー指摘
 
-- 未レビュー
+- 指摘なし。静的ルート、時刻精度と東京日付、文書metadata、Markdown出力、通常リンクを独立レビューで確認した。
 
 ## 完了記録
 
