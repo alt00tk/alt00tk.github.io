@@ -1,14 +1,17 @@
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const entryBySlug = new Map<string, string>();
 
 const blog = defineCollection({
   loader: glob({
     pattern: "**/*.md",
     base: "./src/content/blog",
-    generateId: ({ entry }) => {
+    generateId: ({ entry, base }) => {
       const filename = entry.split("/").at(-1) ?? entry;
       const slug = filename.replace(/\.md$/, "");
 
@@ -18,6 +21,17 @@ const blog = defineCollection({
         );
       }
 
+      const existingEntry = entryBySlug.get(slug);
+      if (existingEntry && existingEntry !== entry) {
+        const existingFile = fileURLToPath(new URL(`./${existingEntry}`, base));
+        if (existsSync(existingFile)) {
+          throw new Error(
+            `Duplicate blog article slug "${slug}": "src/content/blog/${existingEntry}" and "src/content/blog/${entry}" both resolve to the same article ID.`,
+          );
+        }
+      }
+
+      entryBySlug.set(slug, entry);
       return slug;
     },
   }),
