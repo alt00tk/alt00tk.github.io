@@ -1,6 +1,6 @@
 ---
 id: BLOG-001
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
