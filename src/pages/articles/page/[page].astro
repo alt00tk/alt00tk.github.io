@@ -31,7 +31,7 @@ const { articles, currentPage, totalPages } = Astro.props;
 ---
 
 <BaseLayout title="notes">
-  <main>
+  <main class="site-main">
     <ArticleList articles={articles} currentPage={currentPage} totalPages={totalPages} />
   </main>
 </BaseLayout>

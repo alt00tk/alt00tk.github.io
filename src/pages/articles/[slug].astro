@@ -17,21 +17,21 @@ const { Content } = await render(article);
 ---
 
 <BaseLayout title={`${article.data.title} — notes`} description={article.data.description}>
-  <main>
-    <article>
-      <header>
+  <main class="site-main">
+    <article class="article">
+      <header class="article-header">
         <time datetime={article.data.publishedAt}>
           {formatPublishedAt(article.data.publishedAt)}
         </time>
         <h1>{article.data.title}</h1>
-        <p>{article.data.description}</p>
+        <p class="article-lead">{article.data.description}</p>
       </header>
-      <div>
+      <div class="article-content">
         <Content />
       </div>
+      <nav class="article-nav" aria-label="記事ナビゲーション">
+        <a href="/">← Articles</a>
+      </nav>
     </article>
-    <nav aria-label="Article navigation">
-      <a href="/">← Articles</a>
-    </nav>
   </main>
 </BaseLayout>
