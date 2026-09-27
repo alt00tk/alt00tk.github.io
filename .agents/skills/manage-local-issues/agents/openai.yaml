@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage Local Issues"
+  short_description: "Operate a portable local Issue workflow"
+  default_prompt: "Use $manage-local-issues to select and operate the next local Issue."
