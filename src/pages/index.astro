@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatPublishedAt, sortArticlesByPublishedAt } from "../lib/blog";
+
+const articles = sortArticlesByPublishedAt(await getCollection("blog"));
+---
+
+<BaseLayout title="notes">
+  <main>
+    <ul>
+      {articles.map((article) => (
+        <li>
+          <article>
+            <time datetime={article.data.publishedAt}>
+              {formatPublishedAt(article.data.publishedAt)}
+            </time>
+            <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
+            <p>{article.data.description}</p>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

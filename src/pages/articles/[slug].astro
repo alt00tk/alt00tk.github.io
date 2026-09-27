@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatPublishedAt, sortArticlesByPublishedAt } from "../../lib/blog";
+
+export async function getStaticPaths() {
+  const articles = sortArticlesByPublishedAt(await getCollection("blog"));
+
+  return articles.map((article) => ({
+    params: { slug: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+---
+
+<BaseLayout title={`${article.data.title} — notes`} description={article.data.description}>
+  <main>
+    <article>
+      <header>
+        <time datetime={article.data.publishedAt}>
+          {formatPublishedAt(article.data.publishedAt)}
+        </time>
+        <h1>{article.data.title}</h1>
+        <p>{article.data.description}</p>
+      </header>
+      <div>
+        <Content />
+      </div>
+    </article>
+    <nav aria-label="Article navigation">
+      <a href="/">← Articles</a>
+    </nav>
+  </main>
+</BaseLayout>
