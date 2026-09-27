@@ -16,13 +16,13 @@ const newerHref = currentPage === 2 ? "/" : `/articles/page/${currentPage - 1}/`
 const olderHref = `/articles/page/${currentPage + 1}/`;
 ---
 
-<ul>
+<ul class="posts">
   {articles.map((article) => (
-    <li>
+    <li class="post">
+      <time datetime={article.data.publishedAt}>
+        {formatPublishedAt(article.data.publishedAt)}
+      </time>
       <article>
-        <time datetime={article.data.publishedAt}>
-          {formatPublishedAt(article.data.publishedAt)}
-        </time>
         <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
         <p>{article.data.description}</p>
       </article>
@@ -35,25 +35,13 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
     {hasNewer ? (
       <a href={newerHref}>← Newer</a>
     ) : (
-      <span aria-disabled="true">Newer</span>
+      <span aria-disabled="true">← Newer</span>
     )}
     <span aria-current="page">{currentPage} / {totalPages}</span>
     {hasOlder ? (
       <a href={olderHref}>Older →</a>
     ) : (
-      <span aria-disabled="true">Older</span>
+      <span aria-disabled="true">Older →</span>
     )}
   </nav>
 )}
-
-<style>
-  .pagination {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-  }
-
-  .pagination > :last-child {
-    justify-self: end;
-  }
-</style>
