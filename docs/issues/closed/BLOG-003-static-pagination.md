@@ -1,6 +1,6 @@
 ---
 id: BLOG-003
-status: active
+status: closed
 type: feature
 depends_on: [BLOG-002]
 ---
@@ -49,7 +49,7 @@ depends_on: [BLOG-002]
 
 ## レビュー指摘
 
-- 未レビュー
+- 指摘なし。0・1・10・11・20・21件の独立ビルドで生成ページ、記事の欠落・重複、移動先、操作不可表示を確認した。
 
 ## 完了記録
 
