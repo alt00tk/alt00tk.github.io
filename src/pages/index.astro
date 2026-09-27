@@ -1,25 +1,19 @@
 ---
 import { getCollection } from "astro:content";
+import ArticleList from "../components/ArticleList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatPublishedAt, sortArticlesByPublishedAt } from "../lib/blog";
+import { getArticlesForPage, getTotalPages, sortArticlesByPublishedAt } from "../lib/blog";
 
 const articles = sortArticlesByPublishedAt(await getCollection("blog"));
+const totalPages = getTotalPages(articles.length);
 ---
 
 <BaseLayout title="notes">
   <main>
-    <ul>
-      {articles.map((article) => (
-        <li>
-          <article>
-            <time datetime={article.data.publishedAt}>
-              {formatPublishedAt(article.data.publishedAt)}
-            </time>
-            <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
-            <p>{article.data.description}</p>
-          </article>
-        </li>
-      ))}
-    </ul>
+    <ArticleList
+      articles={getArticlesForPage(articles, 1)}
+      currentPage={1}
+      totalPages={totalPages}
+    />
   </main>
 </BaseLayout>

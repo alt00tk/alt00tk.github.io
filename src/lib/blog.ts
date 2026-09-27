@@ -1,3 +1,14 @@
+const ARTICLES_PER_PAGE = 10;
+
+export function getTotalPages(articleCount: number): number {
+  return Math.ceil(articleCount / ARTICLES_PER_PAGE);
+}
+
+export function getArticlesForPage<T>(articles: readonly T[], page: number): T[] {
+  const start = (page - 1) * ARTICLES_PER_PAGE;
+  return articles.slice(start, start + ARTICLES_PER_PAGE);
+}
+
 function subMillisecondFraction(publishedAt: string): string {
   const fractionalSeconds = publishedAt.match(/\.(\d+)(?=(?:Z|[+-]\d{2}:?\d{2})$)/)?.[1] ?? "";
   return fractionalSeconds.slice(3).replace(/0+$/, "");
