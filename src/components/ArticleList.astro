@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatPublishedAt } from "../lib/blog";
+
+interface Props {
+  articles: CollectionEntry<"blog">[];
+  currentPage: number;
+  totalPages: number;
+}
+
+const { articles, currentPage, totalPages } = Astro.props;
+const hasPagination = totalPages > 1;
+const hasNewer = currentPage > 1;
+const hasOlder = currentPage < totalPages;
+const newerHref = currentPage === 2 ? "/" : `/articles/page/${currentPage - 1}/`;
+const olderHref = `/articles/page/${currentPage + 1}/`;
+---
+
+<ul>
+  {articles.map((article) => (
+    <li>
+      <article>
+        <time datetime={article.data.publishedAt}>
+          {formatPublishedAt(article.data.publishedAt)}
+        </time>
+        <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
+        <p>{article.data.description}</p>
+      </article>
+    </li>
+  ))}
+</ul>
+
+{hasPagination && (
+  <nav aria-label="記事一覧ページ送り" class="pagination">
+    {hasNewer ? (
+      <a href={newerHref}>← Newer</a>
+    ) : (
+      <span aria-disabled="true">Newer</span>
+    )}
+    <span aria-current="page">{currentPage} / {totalPages}</span>
+    {hasOlder ? (
+      <a href={olderHref}>Older →</a>
+    ) : (
+      <span aria-disabled="true">Older</span>
+    )}
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .pagination > :last-child {
+    justify-self: end;
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import ArticleList from "../../../components/ArticleList.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getArticlesForPage, getTotalPages, sortArticlesByPublishedAt } from "../../../lib/blog";
+
+interface Props {
+  articles: CollectionEntry<"blog">[];
+  currentPage: number;
+  totalPages: number;
+}
+
+export async function getStaticPaths() {
+  const articles = sortArticlesByPublishedAt(await getCollection("blog"));
+  const totalPages = getTotalPages(articles.length);
+
+  return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => {
+    const currentPage = index + 2;
+    return {
+      params: { page: String(currentPage) },
+      props: {
+        articles: getArticlesForPage(articles, currentPage),
+        currentPage,
+        totalPages,
+      },
+    };
+  });
+}
+
+const { articles, currentPage, totalPages } = Astro.props;
+---
+
+<BaseLayout title="notes">
+  <main>
+    <ArticleList articles={articles} currentPage={currentPage} totalPages={totalPages} />
+  </main>
+</BaseLayout>
