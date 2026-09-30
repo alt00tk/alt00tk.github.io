@@ -1,6 +1,6 @@
 ---
 id: BLOG-005
-status: active
+status: closed
 type: feature
 depends_on: [BLOG-004]
 ---
@@ -21,7 +21,7 @@ depends_on: [BLOG-004]
 - [x] ビルド成果物をGitHub Pagesへ配備する公式にサポートされたActions経路を使う。
 - [x] リポジトリのGitHub Pages User siteで公開でき、サイトのURLは https://alt00tk.github.io/、プロジェクト用のサブパスを必要としない。
 - [x] Pages配備に必要な最小権限とGitHub Pages用environmentをワークフローに設定する。
-- [ ] ワークフローの構成を確認し、GitHub Actions上でビルドと配備が成功することを受け入れ確認として記録する。
+- [x] ワークフローの構成、ローカルの静的ビルド、独立レビューの結果を記録する。mainへの反映後に必要となるGitHub Actions上のビルド・本番配備の確認は、後続Issue BLOG-008で追跡する。
 
 ## 対象外
 
@@ -55,5 +55,7 @@ depends_on: [BLOG-004]
 ## 完了記録
 
 - 変更: `.github/workflows/deploy.yml`を追加し、`main`更新時の`npm ci`・Astro静的build・Pages artifact upload・GitHub Pages deployを構成した。build jobは`contents: read`のみ、deploy jobは`pages: write`と`id-token: write`のみを与え、`github-pages` environmentを指定した。既存のAstro設定は`https://alt00tk.github.io/`をsiteに設定し、`base`を定義していない。
-- 検証: `npm run build`が成功し、`/`と記事2件の静的ページを生成した。workflowをYAMLとして読み込み、設定したtrigger、権限、job依存、action参照を確認した。pushを伴うGitHub Actions実行とGitHub Pagesの公開元設定は未確認のため、最後の受け入れ条件は未チェックのままにする。
+- 検証: `npm run build`が成功し、`/`と記事2件の静的ページを生成した。workflowをYAMLとして読み込み、設定したtrigger、権限、job依存、action参照を確認した。pushを伴うGitHub Actions実行とGitHub Pagesの公開元設定は未確認のため、実配備の確認は後続Issue BLOG-008へ移した。
 - レビュー観点: 別担当が独立レビューを実施し、Looks acceptable（Blocking/Warningなし、任意のSHA固定についてNote 1件）。`main`からの起動条件、jobごとの最小権限、Pages artifactからdeployへの依存、User siteのルートURL、公式Actionの対応状況と未確認事項の記録を確認した。GitHub上の既定ブランチ、公開元設定、実配備結果は未確認。
+
+- 完了条件の変更: ユーザーの指示により、main更新で初めて起動するworkflowの実配備成功をマージ前の完了条件から分離した。BLOG-005は構成・ローカルビルド・独立レビューまでを対象とし、未確認のGitHub Actions実行と公開結果はBLOG-008で追跡する。
