@@ -23,8 +23,14 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
         {formatPublishedAt(article.data.publishedAt)}
       </time>
       <article>
-        <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
-        <p>{article.data.description}</p>
+        <a
+          class="post-link"
+          href={`/articles/${article.id}/`}
+          aria-labelledby={`article-title-${article.id}`}
+        >
+          <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
+          <p>{article.data.description}</p>
+        </a>
       </article>
     </li>
   ))}
