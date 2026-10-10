@@ -1,6 +1,6 @@
 ---
 id: BLOG-009
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
@@ -55,4 +55,5 @@ depends_on: []
 - 検証: JavaScript無効のChromeで、各一覧の全記事をTabで順にたどり、記事ごとに停止1回、既存の`:focus-visible`・2px solid・offset 4pxを確認した。各一覧の先頭記事でEnter、タイトル・description・間の余白のクリックから対応詳細へ移動し、ページ送りの全有効リンクもクリックで遷移した。Chromeのアクセシビリティツリーで、全21記事のリンク名がタイトルのみ、追加説明なし、descriptionがリンク内の非ignoredなStaticTextとして残ることを確認した。desktopと390px幅のフォーカス画像を目視確認した。
 - 検証証拠: `/tmp/blog009-single-browser.mjs`、`/tmp/blog009-single-browser-results.json`、`/tmp/blog009-single-ax-tree.json`、`/tmp/blog009-single-focus-{home,2,3,mobile}.png`。スクリーンリーダー実機の読み上げと複数ブラウザは未確認。アクセシビリティツリーはリンク名とdescriptionが読み取り可能な構造の証拠であり、実機の読み上げ順・挙動の確認は代替しない。
 - 検証: 一時記事15件をすべて削除して既存6記事の`npm run build`を再実行し、7ページのビルド成功を確認した。`git diff --check`と`node .agents/skills/manage-local-issues/scripts/issues.js list`も成功した。
-- レビュー観点: 追加変更の独立レビューで、責務・境界、実装整合性、セキュリティ、検証の信頼性、保守性を確認し、指摘なし。単一リンクによる記事ごとのTab停止1回、`aria-labelledby`の参照整合性とタイトルのみのリンク名、descriptionの読み取り可能な構造、日付とページ送りの境界、CSS適用範囲と可視フォーカスを確認した。ビルドとブラウザ操作は既存証拠をレビューし、再実行していない。スクリーンリーダー実機と複数ブラウザの未確認という制約を維持する。マージ承諾前のためIssueはactiveに留める。
+- レビュー観点: 追加変更の独立レビューで、責務・境界、実装整合性、セキュリティ、検証の信頼性、保守性を確認し、指摘なし。単一リンクによる記事ごとのTab停止1回、`aria-labelledby`の参照整合性とタイトルのみのリンク名、descriptionの読み取り可能な構造、日付とページ送りの境界、CSS適用範囲と可視フォーカスを確認した。ビルドとブラウザ操作は既存証拠をレビューし、再実行していない。スクリーンリーダー実機と複数ブラウザの未確認という制約を維持する。ユーザーが実ブラウザでの動作確認と、mainへのマージ・リモートへのpushを承認した。
+- 手動確認: ユーザーから実ブラウザでの動作確認完了の報告を受けた（2026-10-10）。確認ブラウザや個別操作の詳細は未指定。
