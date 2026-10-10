@@ -35,3 +35,15 @@ const { Content } = await render(article);
     </article>
   </main>
 </BaseLayout>
+
+<script>
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(".article-content a[href]")) {
+    if (
+      (link.protocol === "http:" || link.protocol === "https:") &&
+      link.origin !== window.location.origin
+    ) {
+      link.target = "_blank";
+      link.relList.add("noopener");
+    }
+  }
+</script>
