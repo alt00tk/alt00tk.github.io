@@ -24,7 +24,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
       </time>
       <article>
         <h2><a href={`/articles/${article.id}/`}>{article.data.title}</a></h2>
-        <p>{article.data.description}</p>
+        <p><a href={`/articles/${article.id}/`}>{article.data.description}</a></p>
       </article>
     </li>
   ))}
