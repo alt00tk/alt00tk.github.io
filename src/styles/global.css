@@ -67,7 +67,7 @@ a:focus-visible {
 
 .brand:hover,
 .article-nav a:hover,
-.post h2 a:hover,
+.post-link:hover h2,
 .pagination a:hover {
   color: var(--accent);
 }
@@ -101,6 +101,10 @@ a:focus-visible {
 .post time {
   padding-top: 0.02rem;
   white-space: nowrap;
+}
+
+.post-link {
+  display: block;
 }
 
 .post h2 {
