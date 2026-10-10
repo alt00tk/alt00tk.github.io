@@ -16,7 +16,11 @@ const { article } = Astro.props;
 const { Content } = await render(article);
 ---
 
-<BaseLayout title={`${article.data.title} — notes`} description={article.data.description}>
+<BaseLayout
+  title={`${article.data.title} — notes`}
+  description={article.data.description}
+  publishedAt={article.data.publishedAt}
+>
   <main class="site-main">
     <article class="article">
       <header class="article-header">
