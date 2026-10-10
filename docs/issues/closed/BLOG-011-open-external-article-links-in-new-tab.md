@@ -1,6 +1,6 @@
 ---
 id: BLOG-011
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
@@ -49,5 +49,5 @@ depends_on: []
 
 - 変更: `src/pages/articles/[slug].astro`へ記事本文限定の外部リンク処理を追加した。同一origin・相対URL・非HTTP(S)・記事末尾とヘッダーのリンクには属性を追加しない。
 - 検証: `npm run build`成功（7ページ生成）。`node /tmp/blog011-check.mjs`成功。生成HTMLの実際のDOIリンク2件と、HTTP・HTTPS・プロトコル相対・相対・アンカー・同一origin・異なるport・mailto・telを含む計24ケースを本番originとlocalhostで生成JavaScriptに通し、target/relとhref・表示名・既存relの保持を確認した。記事末尾・ヘッダーのリンクが無変更で、一覧ページへ処理が出力されないことも確認した。
-- 検証の制約: ブラウザーのGUIでのクリック・スクロール位置・window.openerの実測は未実施。別コンテキストと元ページの保護は、生成JavaScriptが付与する標準の`_blank`と`noopener`属性、および元ページを遷移・スクロールさせる処理を追加していないことに基づき確認した。検証用スクリプトは一時ファイルでありリポジトリへ追加しない。
-- レビュー観点: 現在のoriginを基準とするHTTP(S)判定、本文だけへの適用、既存リンク属性の保持、生成HTMLからブラウザー実行への接続を独立レビューで確認済み。阻害指摘なし。マージ承諾待ちのためIssueはactiveに留める。
+- 手動確認: ユーザーから実ブラウザーでも動作確認できたとの報告を受けた。個別の確認手順やwindow.openerの実測結果は報告されていない。元ページの保護は、生成JavaScriptが付与する標準の`noopener`属性に基づき確認した。検証用スクリプトは一時ファイルでありリポジトリへ追加しない。
+- レビュー観点: 現在のoriginを基準とするHTTP(S)判定、本文だけへの適用、既存リンク属性の保持、生成HTMLからブラウザー実行への接続を独立レビューで確認済み。阻害指摘なし。ユーザーからmainへのマージとリモートへのpushの承諾を得た。
