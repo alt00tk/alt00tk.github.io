@@ -1,0 +1,57 @@
+---
+id: BLOG-014
+status: active
+type: feature
+depends_on: []
+---
+
+# 記事のMarkdown原文を配信する
+
+## 問題
+
+記事の正本は `src/content/blog` 以下のMarkdownだが、公開サイトで読めるのは描画済みのHTMLであり、AIやテキスト処理ツールから原文を直接取得するURLがない。
+
+## 意図
+
+公開中の記事について、コミットされたMarkdownファイル全体をサイトから取得できるようにする。
+
+## 受け入れ条件
+
+- [x] 各記事に対応する安定したMarkdown URLから、その記事の原文をHTTPで取得できる。
+- [x] 配信内容は元ファイル全体と一致し、YAML frontmatterとMarkdown本文を含み、HTMLページで置き換えられない。
+- [x] 記事詳細ページから対応する原文URLへ移動できる。
+- [x] 記事追加・修正時に原文配信のための別コピーを手作業で更新する必要がない。
+- [x] 既存のHTML記事URLとcanonical URLは維持される。
+
+## 対象外
+
+- Markdown原文の編集画面やCMS
+- AI向けの要約・変換API
+- 非公開記事や下書きの配信
+
+## 品質境界
+
+公開対象の各Markdown記事について、生成された原文リソースが同じコミットの正本と一致し、記事URLから発見できることを対象とする。HTML表示、frontmatter検証、既存の公開URLには影響させない。
+
+## 実装メモ
+
+- 記事は独自のAstro content loaderで読み込み、現在はファイルパスと描画結果を保存している。原文配信では既存のMarkdownを正本として参照する。
+- 静的出力と `trailingSlash: "always"` の構成で、拡張子付きリソースのURLと実際の配信内容を確認する。
+- frontmatterを含むファイル全体を配信する。HTTP応答がHTMLではなくテキストとして取得できることも確認する。
+
+## 設計判断
+
+- 原文URLを既存slugに対応する `/articles/{slug}.md` とし、HTMLの `/articles/{slug}/` と並べて静的生成する。既存のHTML URL・canonical生成処理・`trailingSlash: "always"`を変更せず、拡張子付きの実ファイルとして出力できることをビルドとHTTPで確認した。詳細ページ末尾の通常リンクから原文へ移動でき、JavaScriptを必要としない。
+- 公開対象はHTML詳細と同じ `getCollection("blog")` の記事だけとする。現在の入力契約には非公開・下書き状態がなく、全有効記事が公開対象である。別のglobやディレクトリ走査で原文だけの公開対象を増やす案は採用しない。
+- loaderが読み込んだfrontmatterを含むUTF-8原文を、Astroの標準フィールド `body` に保持し、endpointでは変換せずに応答する。既存の `rendered` を維持し、HTML描画と原文を同じ読込結果から生成する。endpointでファイルを再読込する案より、実行時の作業ディレクトリや再読込時点へ依存せず、手動コピーも不要になる。BOM・CRLF・末尾改行なしの原文もバイト一致を確認した。
+
+## レビュー指摘
+
+- 独立レビュー実施済み。指摘なし。実装担当とは別のエージェントが、原文の保持と静的配信、Astroのbodyとrenderedの共存、公開対象、slug制約とURL衝突、既存HTML URL・canonicalの維持を確認した。実施済みのHTTP・特殊入力検証とコード経路が整合し、追加修正や後続Issue候補はない。
+
+## 完了記録
+
+- 変更: loaderに原文の保持を追加し、公開記事ごとに `/articles/{slug}.md` を静的生成するendpointを追加した。記事末尾へ「Markdown原文」の通常リンクを追加し、記事ナビゲーションを折り返し可能な横並びにした。原文が取得できない場合は空ファイルを生成せずビルドを失敗させる。独立レビューを完了し、Issueはマージ承諾待ちのためactiveに留める。
+- 検証: `npm run build` が成功し、全8記事について生成した `.md` と正本のバイト一致をNode.jsで確認した。`npm run preview -- --host 127.0.0.1 --port 4321` と一時検証スクリプト `node /tmp/blog014-verify.mjs` で、全8件の原文URLがリダイレクトなしのHTTP 200・非HTMLのテキストMIMEで応答し、応答バイトが正本と一致することを確認した。全HTML記事URLのHTTP 200、既存canonical URL、原文リンクと一覧へ戻るリンク、不存在slugの原文URLが404となることも確認した。HTTP検証は実行環境の制限により親エージェントで実施した。
+- 検証: 一時記事を `src/content/blog/blog014 # source/blog014-original-fixture.md` に追加し、BOM・CRLF・末尾改行なしの原文がバイト単位で維持され、HTMLから原文へリンクすることを確認した。正本だけを更新した再ビルドで原文出力も更新され、削除後の再ビルドでMarkdownとHTMLの両方が残留しないことを確認した。一時記事は削除済みで、最終ビルド後も全8記事の原文バイト一致を再確認した。検証スクリプトとfixtureはコミット対象に含めない。
+- レビュー観点: 原文がfrontmatterを含む未加工の `body` から生成されること、HTMLと原文の公開対象が一致すること、拡張子付きリソースがHTMLへ置き換わらないこと、既存HTML URL・canonical・本文描画を維持することを確認する。本番GitHub PagesのHTTP応答確認はBLOG-008の配備確認に属し、この変更の検証はローカルの静的生成とpreviewまでである。
