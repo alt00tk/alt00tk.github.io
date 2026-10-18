@@ -1,11 +1,32 @@
 :root {
   --bg: #f7f7f3;
   --text: #1f2421;
-  --muted: #7a827d;
+  --muted: #626c65;
   --accent: #556a5d;
-  --line: color-mix(in srgb, var(--text) 12%, transparent);
+  --line: #818b84;
+  color-scheme: light;
   --max-width: 900px;
   --article-width: 95%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #1c211e;
+    --text: #e5e9e5;
+    --muted: #aab5ad;
+    --accent: #aecbb6;
+    --line: #707e73;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1c211e;
+  --text: #e5e9e5;
+  --muted: #aab5ad;
+  --accent: #aecbb6;
+  --line: #707e73;
+  color-scheme: dark;
 }
 
 * {
@@ -39,7 +60,8 @@ a {
   text-decoration: none;
 }
 
-a:focus-visible {
+a:focus-visible,
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
@@ -56,6 +78,7 @@ a:focus-visible {
 .site-header {
   display: flex;
   flex: 0 0 auto;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -65,8 +88,81 @@ a:focus-visible {
 
 .header-links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 0;
+  margin-left: auto;
+}
+
+.theme-picker:not([hidden]) {
+  display: block;
+  position: relative;
+}
+
+.theme-trigger {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.theme-icon[hidden] {
+  display: none;
+}
+
+.theme-menu:not([hidden]) {
+  display: grid;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1;
+  width: 184px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
+}
+
+.theme-option {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.theme-option:hover,
+.theme-option:focus-visible {
+  background: color-mix(in srgb, var(--text) 8%, var(--bg));
+}
+
+.theme-option:focus-visible {
+  outline-offset: -2px;
+}
+
+.theme-check {
+  margin-left: auto;
+  visibility: hidden;
+}
+
+.theme-option[aria-checked="true"] .theme-check {
+  visibility: visible;
 }
 
 .header-icon-link {
@@ -77,6 +173,12 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   transition: color 140ms ease;
+}
+
+.header-icon-link:focus-visible,
+.theme-trigger:focus-visible {
+  outline-offset: -2px;
+  border-radius: 6px;
 }
 
 .brand {

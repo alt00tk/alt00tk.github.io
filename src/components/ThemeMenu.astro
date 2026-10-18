@@ -1,0 +1,136 @@
+---
+const modes = [
+  { value: "system", label: "システム", path: "M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 17h8m-4-4v4" },
+  { value: "light", label: "ライト", path: "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" },
+  { value: "dark", label: "ダーク", path: "M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z" },
+];
+---
+
+<div class="theme-picker" hidden>
+  <button
+    class="theme-trigger"
+    type="button"
+    aria-label="配色を選ぶ（現在: システム）"
+    title="配色を選ぶ"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="theme-menu"
+  >
+    {modes.map((mode) => (
+      <svg class="theme-icon" data-theme-icon={mode.value} hidden={mode.value !== "system"} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d={mode.path} />
+      </svg>
+    ))}
+  </button>
+  <div class="theme-menu" id="theme-menu" role="menu" aria-label="配色" hidden>
+    {modes.map((mode) => (
+      <button class="theme-option" type="button" role="menuitemradio" aria-checked={mode.value === "system" ? "true" : "false"} data-theme-mode={mode.value} tabindex={mode.value === "system" ? 0 : -1}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d={mode.path} />
+        </svg>
+        <span>{mode.label}</span>
+        <svg class="theme-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="m5 12 4 4L19 6" />
+        </svg>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const picker = document.querySelector<HTMLElement>(".theme-picker");
+  const trigger = picker?.querySelector<HTMLButtonElement>(".theme-trigger");
+  const menu = picker?.querySelector<HTMLElement>(".theme-menu");
+  const options = Array.from(picker?.querySelectorAll<HTMLButtonElement>(".theme-option") ?? []);
+
+  if (picker && trigger && menu) {
+    function syncSelection() {
+      const mode = document.documentElement.dataset.theme ?? "system";
+      for (const option of options) {
+        const selected = option.dataset.themeMode === mode;
+        option.setAttribute("aria-checked", String(selected));
+        option.tabIndex = selected ? 0 : -1;
+      }
+      for (const icon of picker!.querySelectorAll<SVGElement>("[data-theme-icon]")) {
+        icon.toggleAttribute("hidden", icon.dataset.themeIcon !== mode);
+      }
+      const label = options.find((option) => option.dataset.themeMode === mode)?.textContent?.trim();
+      trigger!.setAttribute("aria-label", `配色を選ぶ（現在: ${label}）`);
+    }
+
+    function closeMenu(restoreFocus = false) {
+      menu!.hidden = true;
+      trigger!.setAttribute("aria-expanded", "false");
+      if (restoreFocus) trigger!.focus();
+    }
+
+    function openMenu() {
+      syncSelection();
+      menu!.hidden = false;
+      trigger!.setAttribute("aria-expanded", "true");
+      options.find((option) => option.getAttribute("aria-checked") === "true")?.focus();
+    }
+
+    syncSelection();
+    picker.hidden = false;
+
+    trigger.addEventListener("click", () => {
+      if (menu.hidden) openMenu();
+      else closeMenu();
+    });
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        openMenu();
+      }
+    });
+
+    for (const option of options) {
+      option.addEventListener("click", () => {
+        const mode = option.dataset.themeMode!;
+        if (mode === "system") delete document.documentElement.dataset.theme;
+        else document.documentElement.dataset.theme = mode;
+        try {
+          if (mode === "system") localStorage.removeItem("notes-theme");
+          else localStorage.setItem("notes-theme", mode);
+        } catch {
+          // The current page remains usable when the choice cannot be saved.
+        }
+        syncSelection();
+        closeMenu(true);
+      });
+    }
+
+    menu.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") {
+        // Let the browser move focus before hiding the focused menu item.
+        setTimeout(() => {
+          if (!menu.contains(document.activeElement)) closeMenu();
+        }, 0);
+        return;
+      }
+      const index = options.indexOf(document.activeElement as HTMLButtonElement);
+      let next: number;
+      if (event.key === "ArrowDown") next = (index + 1) % options.length;
+      else if (event.key === "ArrowUp") next = (index - 1 + options.length) % options.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = options.length - 1;
+      else return;
+      event.preventDefault();
+      for (const [i, option] of options.entries()) option.tabIndex = i === next ? 0 : -1;
+      options[next].focus();
+    });
+    picker.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menu.hidden) {
+        event.preventDefault();
+        closeMenu(true);
+      }
+    });
+    document.addEventListener("pointerdown", (event) => {
+      if (!picker.contains(event.target as Node)) closeMenu();
+    });
+    document.addEventListener("focusin", (event) => {
+      if (!picker.contains(event.target as Node)) closeMenu();
+    });
+  }
+</script>

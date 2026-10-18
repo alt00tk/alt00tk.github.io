@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import ThemeMenu from "../components/ThemeMenu.astro";
 
 interface Props {
   title: string;
@@ -22,6 +23,17 @@ const imageAlt = "明るい背景に丸みのある文字でnotesと書かれ、
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // Apply the saved mode before styles and page content can be painted.
+      try {
+        const theme = localStorage.getItem("notes-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.dataset.theme = theme;
+        }
+      } catch {
+        // CSS follows the system when browser storage is unavailable.
+      }
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -50,6 +62,7 @@ const imageAlt = "明るい背景に丸みのある文字でnotesと書かれ、
       <header class="site-header">
         <a class="brand" href="/">notes</a>
         <div class="header-links">
+          <ThemeMenu />
           <a
             class="header-icon-link"
             href="/rss.xml"
