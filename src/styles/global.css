@@ -59,7 +59,7 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 44px 0 22px;
+  padding: 44px 0 11px;
   border-bottom: 1px solid var(--line);
 }
 
