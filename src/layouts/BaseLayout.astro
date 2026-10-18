@@ -25,6 +25,7 @@ const imageAlt = "明るい背景に丸みのある文字でnotesと書かれ、
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="notes RSS" href={new URL("/rss.xml", Astro.site)} />
     <meta property="og:title" content={title} />
     <meta property="og:type" content={publishedAt ? "article" : "website"} />
     <meta property="og:url" content={canonicalUrl} />
@@ -49,6 +50,17 @@ const imageAlt = "明るい背景に丸みのある文字でnotesと書かれ、
       <header class="site-header">
         <a class="brand" href="/">notes</a>
         <div class="header-links">
+          <a
+            class="header-icon-link"
+            href="/rss.xml"
+            aria-label="記事の更新をRSSで購読する"
+            title="記事の更新をRSSで購読する"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
+              <circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none" />
+              <path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16" />
+            </svg>
+          </a>
           <a
             class="header-icon-link"
             href="/llms.txt"
