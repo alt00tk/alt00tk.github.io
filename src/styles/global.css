@@ -54,9 +54,23 @@ a:focus-visible {
 }
 
 .site-header {
+  display: flex;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   padding: 44px 0 22px;
   border-bottom: 1px solid var(--line);
+}
+
+.repository-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  transition: color 140ms ease;
 }
 
 .brand {
@@ -66,6 +80,7 @@ a:focus-visible {
 }
 
 .brand:hover,
+.repository-link:hover,
 .article-nav a:hover,
 .post-link:hover h2,
 .pagination a:hover {
