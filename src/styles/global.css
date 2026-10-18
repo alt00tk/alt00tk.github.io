@@ -63,7 +63,13 @@ a:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-.repository-link {
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon-link {
   display: inline-flex;
   flex: 0 0 auto;
   width: 44px;
@@ -80,7 +86,7 @@ a:focus-visible {
 }
 
 .brand:hover,
-.repository-link:hover,
+.header-icon-link:hover,
 .article-nav a:hover,
 .post-link:hover h2,
 .pagination a:hover {
