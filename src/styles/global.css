@@ -310,6 +310,39 @@ button:focus-visible {
   margin: 0 0 1.75em;
 }
 
+.article-content :is(h1, h2, h3, h4, h5, h6)::before {
+  margin-right: 0.4em;
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+/* Empty alternative text keeps decorative markers out of heading names. */
+.article-content h1::before {
+  content: "#" / "";
+}
+
+.article-content h2::before {
+  content: "##" / "";
+}
+
+.article-content h3::before {
+  content: "###" / "";
+}
+
+.article-content h4::before {
+  content: "####" / "";
+}
+
+.article-content h5::before {
+  content: "#####" / "";
+}
+
+.article-content h6::before {
+  content: "######" / "";
+}
+
 .article-content h2 {
   margin: 3.2em 0 1em;
   font-size: 1.3725rem;
