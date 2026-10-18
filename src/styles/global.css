@@ -91,14 +91,13 @@ button:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
+  gap: 0;
   margin-left: auto;
 }
 
 .theme-picker:not([hidden]) {
   display: block;
   position: relative;
-  margin-right: 8px;
 }
 
 .theme-trigger {
@@ -383,10 +382,6 @@ button:focus-visible {
 
   .site-header {
     padding-top: 30px;
-  }
-
-  .theme-picker:not([hidden]) {
-    margin-right: 0;
   }
 
   .site-main {
