@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import ThemeSelect from "../components/ThemeSelect.astro";
+import ThemeMenu from "../components/ThemeMenu.astro";
 
 interface Props {
   title: string;
@@ -62,7 +62,7 @@ const imageAlt = "明るい背景に丸みのある文字でnotesと書かれ、
       <header class="site-header">
         <a class="brand" href="/">notes</a>
         <div class="header-links">
-          <ThemeSelect />
+          <ThemeMenu />
           <a
             class="header-icon-link"
             href="/rss.xml"
