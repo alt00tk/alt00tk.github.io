@@ -92,6 +92,7 @@ export const blogLoader = {
           id: article.slug,
           data,
           filePath: article.articlePath,
+          body: contents,
           digest: generateDigest(contents),
           rendered,
         });
