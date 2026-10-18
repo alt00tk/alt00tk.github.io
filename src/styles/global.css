@@ -175,6 +175,12 @@ button:focus-visible {
   transition: color 140ms ease;
 }
 
+.header-icon-link:focus-visible,
+.theme-trigger:focus-visible {
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
 .brand {
   font-weight: 500;
   letter-spacing: 0.045em;
