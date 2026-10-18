@@ -1,0 +1,36 @@
+<label class="theme-picker" hidden>
+  <span>配色</span>
+  <select name="theme">
+    <option value="system">システム</option>
+    <option value="light">ライト</option>
+    <option value="dark">ダーク</option>
+  </select>
+</label>
+
+<script>
+  const picker = document.querySelector<HTMLLabelElement>(".theme-picker");
+  const select = picker?.querySelector("select");
+
+  if (picker && select) {
+    select.value = document.documentElement.dataset.theme ?? "system";
+    picker.hidden = false;
+
+    select.addEventListener("change", () => {
+      if (select.value === "system") {
+        delete document.documentElement.dataset.theme;
+      } else {
+        document.documentElement.dataset.theme = select.value;
+      }
+
+      try {
+        if (select.value === "system") {
+          localStorage.removeItem("notes-theme");
+        } else {
+          localStorage.setItem("notes-theme", select.value);
+        }
+      } catch {
+        // The current page remains usable even when the choice cannot be saved.
+      }
+    });
+  }
+</script>

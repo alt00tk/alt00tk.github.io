@@ -1,11 +1,32 @@
 :root {
   --bg: #f7f7f3;
   --text: #1f2421;
-  --muted: #7a827d;
+  --muted: #626c65;
   --accent: #556a5d;
-  --line: color-mix(in srgb, var(--text) 12%, transparent);
+  --line: #818b84;
+  color-scheme: light;
   --max-width: 900px;
   --article-width: 95%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #1c211e;
+    --text: #e5e9e5;
+    --muted: #aab5ad;
+    --accent: #aecbb6;
+    --line: #707e73;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1c211e;
+  --text: #e5e9e5;
+  --muted: #aab5ad;
+  --accent: #aecbb6;
+  --line: #707e73;
+  color-scheme: dark;
 }
 
 * {
@@ -39,7 +60,8 @@ a {
   text-decoration: none;
 }
 
-a:focus-visible {
+a:focus-visible,
+select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
@@ -56,6 +78,7 @@ a:focus-visible {
 .site-header {
   display: flex;
   flex: 0 0 auto;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -65,8 +88,29 @@ a:focus-visible {
 
 .header-links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
+  margin-left: auto;
+}
+
+.theme-picker:not([hidden]) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+  font-size: 0.875rem;
+}
+
+.theme-picker select {
+  min-height: 44px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
 }
 
 .header-icon-link {
@@ -286,6 +330,10 @@ a:focus-visible {
 
   .site-header {
     padding-top: 30px;
+  }
+
+  .theme-picker:not([hidden]) {
+    margin-right: 0;
   }
 
   .site-main {
