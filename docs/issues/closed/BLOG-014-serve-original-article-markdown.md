@@ -1,6 +1,6 @@
 ---
 id: BLOG-014
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
@@ -52,7 +52,7 @@ depends_on: []
 
 ## 完了記録
 
-- 変更: loaderに原文の保持を追加し、公開記事ごとに `/articles/{slug}.md` を静的生成するendpointを追加した。記事詳細には原文リンクを設けず、リンク追加に伴うナビゲーションのCSS変更も取り除いた。原文への導線はBLOG-017の `llms.txt` に限定する。原文が取得できない場合は空ファイルを生成せずビルドを失敗させる。独立レビューを完了し、Issueはマージ承諾待ちのためactiveに留める。
+- 変更: loaderに原文の保持を追加し、公開記事ごとに `/articles/{slug}.md` を静的生成するendpointを追加した。記事詳細には原文リンクを設けず、リンク追加に伴うナビゲーションのCSS変更も取り除いた。原文への導線はBLOG-017の `llms.txt` に限定する。原文が取得できない場合は空ファイルを生成せずビルドを失敗させる。独立レビューを完了し、ユーザーのマージ・push承諾を受けてclosedへ移行した。
 - 検証: `npm run build` が成功し、全8記事について生成した `.md` と正本のバイト一致をNode.jsで確認した。`npm run preview -- --host 127.0.0.1 --port 4321` と一時検証スクリプト `node /tmp/blog014-verify.mjs` で、全8件の原文URLがリダイレクトなしのHTTP 200・非HTMLのテキストMIMEで応答し、応答バイトが正本と一致することを確認した。全HTML記事URLのHTTP 200、既存canonical URL、一覧へ戻るリンク、不存在slugの原文URLが404となることも確認した。HTTP検証は実行環境の制限により親エージェントで実施した。
 - 検証: 一時記事を `src/content/blog/blog014 # source/blog014-original-fixture.md` に追加し、BOM・CRLF・末尾改行なしの原文がバイト単位で維持されることを確認した。正本だけを更新した再ビルドで原文出力も更新され、削除後の再ビルドでMarkdownとHTMLの両方が残留しないことを確認した。一時記事は削除済みで、最終ビルド後も全8記事の原文バイト一致を再確認した。検証スクリプトとfixtureはコミット対象に含めない。
 - 検証: 原文リンク撤去後、親エージェントが `npm run build` の成功と全8記事のMarkdown・HTMLの生成を確認した。独立レビューではリンクと専用CSSの撤去、および関連Issue文書の整合を差分で確認した。
