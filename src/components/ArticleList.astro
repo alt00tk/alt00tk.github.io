@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatPublishedAt } from "../lib/blog";
+import { formatPublishedAt, getArticlesForPage } from "../lib/blog";
 
 interface Props {
   articles: CollectionEntry<"blog">[];
@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { articles, currentPage, totalPages } = Astro.props;
+const pageArticleIds = new Set(getArticlesForPage(articles, currentPage).map((article) => article.id));
 const hasPagination = totalPages > 1;
 const hasNewer = currentPage > 1;
 const hasOlder = currentPage < totalPages;
@@ -16,38 +17,79 @@ const newerHref = currentPage === 2 ? "/" : `/articles/page/${currentPage - 1}/`
 const olderHref = `/articles/page/${currentPage + 1}/`;
 ---
 
-<ul class="posts">
-  {articles.map((article) => (
-    <li class="post">
-      <time datetime={article.data.publishedAt}>
-        {formatPublishedAt(article.data.publishedAt)}
-      </time>
-      <article>
-        <a
-          class="post-link"
-          href={`/articles/${article.id}/`}
-          aria-labelledby={`article-title-${article.id}`}
-        >
-          <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
-          <p>{article.data.description}</p>
-        </a>
-      </article>
-    </li>
-  ))}
-</ul>
+<div class="article-list">
+  <div class="article-search" role="search" hidden>
+    <label for="article-query">記事を検索</label>
+    <input id="article-query" type="search" placeholder="タイトル・説明文を検索" aria-controls="article-posts" />
+  </div>
+  <p class="search-status" role="status" hidden></p>
 
-{hasPagination && (
-  <nav aria-label="記事一覧ページ送り" class="pagination">
-    {hasNewer ? (
-      <a href={newerHref}>← Newer</a>
-    ) : (
-      <span aria-disabled="true">← Newer</span>
-    )}
-    <span aria-current="page">{currentPage} / {totalPages}</span>
-    {hasOlder ? (
-      <a href={olderHref}>Older →</a>
-    ) : (
-      <span aria-disabled="true">Older →</span>
-    )}
-  </nav>
-)}
+  <ul class="posts" id="article-posts">
+    {articles.map((article) => (
+      <li class="post" hidden={!pageArticleIds.has(article.id)}>
+        <time datetime={article.data.publishedAt}>
+          {formatPublishedAt(article.data.publishedAt)}
+        </time>
+        <article>
+          <a
+            class="post-link"
+            href={`/articles/${article.id}/`}
+            aria-labelledby={`article-title-${article.id}`}
+          >
+            <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
+            <p>{article.data.description}</p>
+          </a>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  {hasPagination && (
+    <nav aria-label="記事一覧ページ送り" class="pagination">
+      {hasNewer ? (
+        <a href={newerHref}>← Newer</a>
+      ) : (
+        <span aria-disabled="true">← Newer</span>
+      )}
+      <span aria-current="page">{currentPage} / {totalPages}</span>
+      {hasOlder ? (
+        <a href={olderHref}>Older →</a>
+      ) : (
+        <span aria-disabled="true">Older →</span>
+      )}
+    </nav>
+  )}
+</div>
+
+<script>
+  const list = document.querySelector<HTMLElement>(".article-list");
+  const search = list?.querySelector<HTMLElement>(".article-search");
+  const input = search?.querySelector<HTMLInputElement>("input");
+  const status = list?.querySelector<HTMLElement>(".search-status");
+  const pagination = list?.querySelector<HTMLElement>(".pagination");
+  const posts = Array.from(list?.querySelectorAll<HTMLElement>(".post") ?? []).map((post) => ({
+    element: post,
+    initiallyHidden: post.hidden,
+    title: post.querySelector("h2")!.textContent.toLowerCase(),
+    description: post.querySelector("p")!.textContent.toLowerCase(),
+  }));
+
+  if (search && input && status) {
+    const update = () => {
+      const query = input.value.toLowerCase();
+      let count = 0;
+      for (const post of posts) {
+        const matches = post.title.includes(query) || post.description.includes(query);
+        post.element.hidden = query ? !matches : post.initiallyHidden;
+        if (matches) count += 1;
+      }
+      if (pagination) pagination.hidden = query.length > 0;
+      status.hidden = query.length === 0;
+      status.textContent = query ? `検索結果: ${count}件` : "";
+    };
+
+    input.addEventListener("input", update);
+    update();
+    search.hidden = false;
+  }
+</script>

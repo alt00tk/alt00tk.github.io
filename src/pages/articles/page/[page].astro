@@ -2,7 +2,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import ArticleList from "../../../components/ArticleList.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { getArticlesForPage, getTotalPages, sortArticlesByPublishedAt } from "../../../lib/blog";
+import { getTotalPages, sortArticlesByPublishedAt } from "../../../lib/blog";
 
 interface Props {
   articles: CollectionEntry<"blog">[];
@@ -19,7 +19,7 @@ export async function getStaticPaths() {
     return {
       params: { page: String(currentPage) },
       props: {
-        articles: getArticlesForPage(articles, currentPage),
+        articles,
         currentPage,
         totalPages,
       },

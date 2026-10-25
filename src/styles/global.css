@@ -208,8 +208,43 @@ button:focus-visible {
   list-style: none;
 }
 
-.post {
+.article-search:not([hidden]) {
   display: grid;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.article-search label,
+.search-status {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.article-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.article-search input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.search-status {
+  margin: 0 0 24px;
+}
+
+.post:not([hidden]) {
+  display: grid;
+}
+
+.post {
   grid-template-columns: 108px minmax(0, 1fr);
   gap: 20px;
 }
@@ -244,8 +279,11 @@ button:focus-visible {
   line-height: 1.85;
 }
 
-.pagination {
+.pagination:not([hidden]) {
   display: grid;
+}
+
+.pagination {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 20px;
