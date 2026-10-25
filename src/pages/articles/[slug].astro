@@ -41,7 +41,7 @@ const { Content } = await render(article);
 </BaseLayout>
 
 <script>
-  import { prepareListReturnLink, readArticleOrigin } from "../../lib/article-list-context";
+  import { getListReturnHref, readArticleOrigin } from "../../lib/article-list-context";
 
   const returnLink = document.querySelector<HTMLAnchorElement>(".article-nav a");
   const context = readArticleOrigin();
@@ -49,14 +49,7 @@ const { Content } = await render(article);
     const source = new URL(context.listUrl);
     source.hash = ""; // Referrers never include fragments; retain it in the actual return URL.
     if (document.referrer === source.href) {
-      returnLink.href = context.listUrl;
-      const rememberReturn = (event: MouseEvent) => {
-        if (event.defaultPrevented || (event.type !== "contextmenu" && event.button !== 0 && event.button !== 1)) return;
-        prepareListReturnLink(returnLink, context);
-      };
-      returnLink.addEventListener("pointerdown", rememberReturn);
-      returnLink.addEventListener("click", rememberReturn);
-      returnLink.addEventListener("contextmenu", rememberReturn);
+      returnLink.href = getListReturnHref(context);
     }
   }
 

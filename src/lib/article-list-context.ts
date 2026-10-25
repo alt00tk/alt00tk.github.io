@@ -12,22 +12,13 @@ const ORIGIN_PARAM = "list-origin";
 const RETURN_PARAM = "list-return";
 
 export function prepareArticleLink(link: HTMLAnchorElement, context: ArticleListContext) {
-  prepareContextLink(link, context, ORIGIN_PARAM);
-}
-
-export function prepareListReturnLink(link: HTMLAnchorElement, context: ArticleListContext) {
-  link.href = context.listUrl;
-  prepareContextLink(link, context, RETURN_PARAM);
-}
-
-function prepareContextLink(link: HTMLAnchorElement, context: ArticleListContext, parameter: string) {
   const destination = new URL(link.href);
-  destination.searchParams.delete(parameter);
+  destination.searchParams.delete(ORIGIN_PARAM);
   link.href = destination.href;
   try {
     // Each activation has its own snapshot, including simultaneous tabs for the same article.
     const token = crypto.randomUUID();
-    destination.searchParams.set(parameter, token);
+    destination.searchParams.set(ORIGIN_PARAM, token);
     const now = Date.now();
     for (const key of Object.keys(localStorage)) {
       if (!key.startsWith(CONTEXT_PREFIX)) continue;
@@ -42,13 +33,19 @@ function prepareContextLink(link: HTMLAnchorElement, context: ArticleListContext
     }
     localStorage.setItem(CONTEXT_PREFIX + token, JSON.stringify({
       ...context,
-      articleUrl: parameter === ORIGIN_PARAM ? destination.href : context.articleUrl,
-      destinationUrl: destination.href, createdAt: now,
+      articleUrl: destination.href, createdAt: now,
     }));
     link.href = destination.href;
   } catch {
     // Keep the normal destination link if shared storage cannot be used.
   }
+}
+
+export function getListReturnHref(context: ArticleListContext): string {
+  const destination = new URL(context.listUrl);
+  const token = new URL(context.articleUrl).searchParams.get(ORIGIN_PARAM);
+  if (token) destination.searchParams.set(RETURN_PARAM, token);
+  return destination.href;
 }
 
 export function readArticleOrigin(): ArticleListContext | undefined {
@@ -61,7 +58,7 @@ function readSharedContext(parameter: string): ArticleListContext | undefined {
     if (!token || !/^[a-f0-9-]{36}$/.test(token)) return;
     const saved = JSON.parse(localStorage.getItem(CONTEXT_PREFIX + token) ?? "null");
     if (
-      !saved || saved.destinationUrl !== location.href || typeof saved.createdAt !== "number" ||
+      !saved || typeof saved.createdAt !== "number" ||
       Date.now() - saved.createdAt > CONTEXT_MAX_AGE
     ) return;
     return validateListContext(saved);
@@ -92,7 +89,7 @@ function validateListContext(context: unknown): ArticleListContext | undefined {
 
 export function takeListReturn(): ArticleListContext | undefined {
   const context = readSharedContext(RETURN_PARAM);
-  if (!context) return;
+  if (!context || getListReturnHref(context) !== location.href) return;
   const source = new URL(context.articleUrl);
   source.hash = "";
   if (document.referrer !== source.href) return;
