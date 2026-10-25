@@ -8,7 +8,7 @@ const articles = sortArticlesByPublishedAt(await getCollection("blog"));
 const totalPages = getTotalPages(articles.length);
 ---
 
-<BaseLayout title="notes">
+<BaseLayout title="notes" searchable>
   <main class="site-main">
     <ArticleList
       articles={articles}
