@@ -4,6 +4,7 @@
   --muted: #626c65;
   --accent: #556a5d;
   --line: #818b84;
+  --search-highlight: #e7e5c4;
   color-scheme: light;
   --max-width: 900px;
   --article-width: 95%;
@@ -16,6 +17,7 @@
     --muted: #aab5ad;
     --accent: #aecbb6;
     --line: #707e73;
+    --search-highlight: #4c5036;
     color-scheme: dark;
   }
 }
@@ -26,6 +28,7 @@
   --muted: #aab5ad;
   --accent: #aecbb6;
   --line: #707e73;
+  --search-highlight: #4c5036;
   color-scheme: dark;
 }
 
@@ -100,7 +103,8 @@ button:focus-visible {
   position: relative;
 }
 
-.theme-trigger {
+.theme-trigger,
+.search-trigger:not([hidden]) {
   display: flex;
   width: 44px;
   height: 44px;
@@ -176,7 +180,8 @@ button:focus-visible {
 }
 
 .header-icon-link:focus-visible,
-.theme-trigger:focus-visible {
+.theme-trigger:focus-visible,
+.search-trigger:focus-visible {
   outline-offset: -2px;
   border-radius: 6px;
 }
@@ -189,6 +194,7 @@ button:focus-visible {
 
 .brand:hover,
 .header-icon-link:hover,
+.search-trigger:hover,
 .article-nav a:hover,
 .post-link:hover h2,
 .pagination a:hover {
@@ -208,8 +214,76 @@ button:focus-visible {
   list-style: none;
 }
 
-.post {
+.article-search:not([hidden]) {
   display: grid;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.article-search label,
+.search-status {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.article-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.search-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.search-clear {
+  flex-shrink: 0;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.search-clear:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.article-search input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.search-status {
+  margin: 8px 0 0;
+}
+
+.search-status:empty {
+  margin: 0;
+}
+
+.post mark {
+  background: var(--search-highlight);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 0 0.08em;
+  box-decoration-break: clone;
+}
+
+.post:not([hidden]) {
+  display: grid;
+}
+
+.post {
   grid-template-columns: 108px minmax(0, 1fr);
   gap: 20px;
 }
@@ -244,8 +318,11 @@ button:focus-visible {
   line-height: 1.85;
 }
 
-.pagination {
+.pagination:not([hidden]) {
   display: grid;
+}
+
+.pagination {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 20px;

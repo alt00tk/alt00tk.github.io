@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatPublishedAt } from "../lib/blog";
+import { formatPublishedAt, getArticlesForPage } from "../lib/blog";
 
 interface Props {
   articles: CollectionEntry<"blog">[];
@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { articles, currentPage, totalPages } = Astro.props;
+const pageArticleIds = new Set(getArticlesForPage(articles, currentPage).map((article) => article.id));
 const hasPagination = totalPages > 1;
 const hasNewer = currentPage > 1;
 const hasOlder = currentPage < totalPages;
@@ -16,38 +17,156 @@ const newerHref = currentPage === 2 ? "/" : `/articles/page/${currentPage - 1}/`
 const olderHref = `/articles/page/${currentPage + 1}/`;
 ---
 
-<ul class="posts">
-  {articles.map((article) => (
-    <li class="post">
-      <time datetime={article.data.publishedAt}>
-        {formatPublishedAt(article.data.publishedAt)}
-      </time>
-      <article>
-        <a
-          class="post-link"
-          href={`/articles/${article.id}/`}
-          aria-labelledby={`article-title-${article.id}`}
-        >
-          <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
-          <p>{article.data.description}</p>
-        </a>
-      </article>
-    </li>
-  ))}
-</ul>
+<div class="article-list">
+  <div class="article-search" id="article-search-panel" role="search" hidden>
+    <label for="article-query">記事を検索</label>
+    <div class="search-controls">
+      <input id="article-query" type="search" placeholder="タイトル・説明文を検索" aria-controls="article-posts" />
+      <button class="search-clear" type="button" aria-label="検索語をクリア" disabled>クリア</button>
+    </div>
+    <p class="search-status" role="status" aria-atomic="true"></p>
+  </div>
 
-{hasPagination && (
-  <nav aria-label="記事一覧ページ送り" class="pagination">
-    {hasNewer ? (
-      <a href={newerHref}>← Newer</a>
-    ) : (
-      <span aria-disabled="true">← Newer</span>
-    )}
-    <span aria-current="page">{currentPage} / {totalPages}</span>
-    {hasOlder ? (
-      <a href={olderHref}>Older →</a>
-    ) : (
-      <span aria-disabled="true">Older →</span>
-    )}
-  </nav>
-)}
+  <ul class="posts" id="article-posts">
+    {articles.map((article) => (
+      <li class="post" hidden={!pageArticleIds.has(article.id)}>
+        <time datetime={article.data.publishedAt}>
+          {formatPublishedAt(article.data.publishedAt)}
+        </time>
+        <article>
+          <a
+            class="post-link"
+            href={`/articles/${article.id}/`}
+            aria-labelledby={`article-title-${article.id}`}
+          >
+            <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
+            <p>{article.data.description}</p>
+          </a>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  {hasPagination && (
+    <nav aria-label="記事一覧ページ送り" class="pagination">
+      {hasNewer ? (
+        <a href={newerHref}>← Newer</a>
+      ) : (
+        <span aria-disabled="true">← Newer</span>
+      )}
+      <span aria-current="page">{currentPage} / {totalPages}</span>
+      {hasOlder ? (
+        <a href={olderHref}>Older →</a>
+      ) : (
+        <span aria-disabled="true">Older →</span>
+      )}
+    </nav>
+  )}
+</div>
+
+<script>
+  const list = document.querySelector<HTMLElement>(".article-list");
+  const trigger = document.querySelector<HTMLButtonElement>("#article-search-trigger");
+  const search = list?.querySelector<HTMLElement>(".article-search");
+  const input = search?.querySelector<HTMLInputElement>("input");
+  const clear = search?.querySelector<HTMLButtonElement>(".search-clear");
+  const status = list?.querySelector<HTMLElement>(".search-status");
+  const pagination = list?.querySelector<HTMLElement>(".pagination");
+
+  function searchableText(element: HTMLElement) {
+    const text = element.textContent;
+    const starts: number[] = [];
+    const ends: number[] = [];
+    let offset = 0;
+    // Lowercasing can expand a character (for example İ becomes i + a combining dot).
+    // Map lowered UTF-16 offsets back to the original text before creating marks.
+    for (const character of text) {
+      for (let index = 0; index < character.toLowerCase().length; index += 1) {
+        starts.push(offset);
+        ends.push(offset + character.length);
+      }
+      offset += character.length;
+    }
+    return { element, text, lowered: text.toLowerCase(), starts, ends };
+  }
+
+  function highlight(field: ReturnType<typeof searchableText>, query: string) {
+    const ranges: { start: number; end: number }[] = [];
+    if (query) {
+      let index = field.lowered.indexOf(query);
+      while (index !== -1) {
+        const start = field.starts[index];
+        const end = field.ends[index + query.length - 1];
+        const previous = ranges.at(-1);
+        if (previous && start < previous.end) previous.end = Math.max(previous.end, end);
+        else ranges.push({ start, end });
+        index = field.lowered.indexOf(query, index + 1);
+      }
+    }
+    const fragment = document.createDocumentFragment();
+    let offset = 0;
+    for (const { start, end } of ranges) {
+      fragment.append(document.createTextNode(field.text.slice(offset, start)));
+      const mark = document.createElement("mark");
+      mark.textContent = field.text.slice(start, end);
+      fragment.append(mark);
+      offset = end;
+    }
+    fragment.append(document.createTextNode(field.text.slice(offset)));
+    field.element.replaceChildren(fragment);
+  }
+
+  const posts = Array.from(list?.querySelectorAll<HTMLElement>(".post") ?? []).map((post) => ({
+    element: post,
+    initiallyHidden: post.hidden,
+    title: searchableText(post.querySelector<HTMLElement>("h2")!),
+    description: searchableText(post.querySelector<HTMLElement>("p")!),
+  }));
+
+  if (trigger && search && input && clear && status) {
+    const update = () => {
+      const open = !search.hidden;
+      const query = open ? input.value.toLowerCase() : "";
+      let count = 0;
+      for (const post of posts) {
+        const matches = post.title.lowered.includes(query) || post.description.lowered.includes(query);
+        post.element.hidden = open ? !matches : post.initiallyHidden;
+        highlight(post.title, query);
+        highlight(post.description, query);
+        if (matches) count += 1;
+      }
+      if (pagination) pagination.hidden = open;
+      clear.disabled = input.value.length === 0;
+      const message = query ? (count ? `検索結果: ${count}件` : "該当する記事はありません（0件）") : "";
+      if (status.textContent !== message) status.textContent = message;
+    };
+
+    input.addEventListener("input", update);
+    clear.addEventListener("click", () => {
+      input.value = "";
+      update();
+      input.focus();
+    });
+
+    const setOpen = (open: boolean) => {
+      search.hidden = !open;
+      trigger.setAttribute("aria-expanded", String(open));
+      const label = open ? "記事検索を閉じる" : "記事検索を開く";
+      trigger.setAttribute("aria-label", label);
+      trigger.title = label;
+      if (!open) input.value = "";
+      update();
+      if (open) input.focus();
+      else trigger.focus();
+    };
+
+    trigger.addEventListener("click", () => setOpen(search.hidden));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !event.defaultPrevented && !search.hidden) {
+        event.preventDefault();
+        setOpen(false);
+      }
+    });
+    trigger.hidden = false;
+  }
+</script>
