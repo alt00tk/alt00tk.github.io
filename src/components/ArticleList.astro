@@ -65,7 +65,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
 </div>
 
 <script>
-  import { prepareArticleLink, takeListReturn } from "../lib/article-list-context";
+  import { LIST_ORIGIN, saveListContext, takeListReturn } from "../lib/article-list-context";
 
   const returning = takeListReturn();
   const list = document.querySelector<HTMLElement>(".article-list");
@@ -180,10 +180,10 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
   }
 
   const rememberList = (event: MouseEvent) => {
-    if (event.defaultPrevented || (event.type !== "contextmenu" && event.button !== 0 && event.button !== 1)) return;
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a.post-link") : null;
     if (!link) return;
-    prepareArticleLink(link, {
+    saveListContext(LIST_ORIGIN, {
       listUrl: location.href,
       articleUrl: link.href,
       scrollY: window.scrollY,
@@ -192,8 +192,6 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
     });
   };
   list?.addEventListener("click", rememberList);
-  list?.addEventListener("pointerdown", rememberList);
-  list?.addEventListener("contextmenu", rememberList);
 
   if (returning) {
     window.addEventListener("pageshow", async (event) => {
