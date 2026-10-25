@@ -1,6 +1,6 @@
 ---
 id: BLOG-020
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
@@ -58,5 +58,5 @@ depends_on: []
 - 検証: `npm run build` 成功（本番11ページ）、検証用コピーの `npm run build` 成功（24ページ）。`node .agents/skills/manage-local-issues/scripts/issues.js list` 成功（BLOG-020のみactive）、`git diff --check` 成功。
 - 検証: `/tmp/blog020-validation/verify.mjs` をChromiumで実行し、トップと2ページ目の650px位置、query/hash付きURL、検索「AI」の入力値・結果・ハイライト・400px位置の復帰を確認した。記事直接アクセス時の `/` 先頭、標準の戻る・進む、JavaScript無効時のEnter操作、保存例外時の通常リンクへのフォールバックも成功した。
 - 検証: `/tmp/blog020-validation/same-tab.mjs` で `%20` を含む元URLの完全保持、検索「Fixture」と400px位置、復帰要求の消費、過去の保存情報を残した記事直接アクセスの拒否、実Enterキーでの往復、実中クリックの別タブでの記事と一覧の通常リンクを確認した。記事リンクURLが変わらず共有localStorageも変更されないことを確認した。
-- レビュー観点: 同じタブの保存情報とreferrerの照合、復帰要求の一度だけの消費、保存例外、既存検索とスクロール、通常リンクとブラウザー履歴への影響。実装担当とは別の担当が変更後の全5レビュー領域と最小性を確認し、`Looks acceptable`（指摘なし）と判定した。マージ承諾前のためIssueはactiveに留める。
+- レビュー観点: 同じタブの保存情報とreferrerの照合、復帰要求の一度だけの消費、保存例外、既存検索とスクロール、通常リンクとブラウザー履歴への影響。実装担当とは別の担当が変更後の全5レビュー領域と最小性を確認し、`Looks acceptable`（指摘なし）と判定した。ユーザーがmainへのマージとリモートへのプッシュを承諾した。
 - 独立検証: 別担当が `same-tab.mjs` を実行し、元URL・検索状態・位置の復元、復帰要求の消費、直接アクセスでの過去保存情報の拒否、実Enter操作、別タブの通常リンク、URLとlocalStorageの不変性を確認した。実ブラウザー検証はChromiumのみで、Firefox・WebKit・右クリックメニューは未検証。
