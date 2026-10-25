@@ -41,6 +41,22 @@ const { Content } = await render(article);
 </BaseLayout>
 
 <script>
+  import { LIST_ORIGIN, LIST_RETURN, readListContext, saveListContext } from "../../lib/article-list-context";
+
+  const returnLink = document.querySelector<HTMLAnchorElement>(".article-nav a");
+  const context = readListContext(LIST_ORIGIN);
+  if (returnLink && context && context.articleUrl === location.href) {
+    const source = new URL(context.listUrl);
+    source.hash = ""; // Referrers never include fragments; retain it in the actual return URL.
+    if (document.referrer === source.href) {
+      returnLink.href = context.listUrl;
+      returnLink.addEventListener("click", (event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        saveListContext(LIST_RETURN, context);
+      });
+    }
+  }
+
   for (const link of document.querySelectorAll<HTMLAnchorElement>(".article-content a[href]")) {
     if (
       (link.protocol === "http:" || link.protocol === "https:") &&
