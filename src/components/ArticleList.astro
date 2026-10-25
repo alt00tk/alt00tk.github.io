@@ -65,6 +65,9 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
 </div>
 
 <script>
+  import { prepareArticleLink, takeListReturn } from "../lib/article-list-context";
+
+  const returning = takeListReturn();
   const list = document.querySelector<HTMLElement>(".article-list");
   const trigger = document.querySelector<HTMLButtonElement>("#article-search-trigger");
   const search = list?.querySelector<HTMLElement>(".article-search");
@@ -148,7 +151,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
       input.focus();
     });
 
-    const setOpen = (open: boolean) => {
+    const setOpen = (open: boolean, focus = true) => {
       search.hidden = !open;
       trigger.setAttribute("aria-expanded", String(open));
       const label = open ? "記事検索を閉じる" : "記事検索を開く";
@@ -156,8 +159,10 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
       trigger.title = label;
       if (!open) input.value = "";
       update();
-      if (open) input.focus();
-      else trigger.focus();
+      if (focus) {
+        if (open) input.focus();
+        else trigger.focus();
+      }
     };
 
     trigger.addEventListener("click", () => setOpen(search.hidden));
@@ -168,5 +173,33 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
       }
     });
     trigger.hidden = false;
+    if (returning) {
+      input.value = returning.query;
+      setOpen(returning.searchOpen, false);
+    }
+  }
+
+  const rememberList = (event: MouseEvent) => {
+    if (event.defaultPrevented || (event.type !== "contextmenu" && event.button !== 0 && event.button !== 1)) return;
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a.post-link") : null;
+    if (!link) return;
+    prepareArticleLink(link, {
+      listUrl: location.href,
+      articleUrl: link.href,
+      scrollY: window.scrollY,
+      searchOpen: search ? !search.hidden : false,
+      query: input?.value ?? "",
+    });
+  };
+  list?.addEventListener("click", rememberList);
+  list?.addEventListener("pointerdown", rememberList);
+  list?.addEventListener("contextmenu", rememberList);
+
+  if (returning) {
+    window.addEventListener("pageshow", async (event) => {
+      if (event.persisted) return;
+      await document.fonts.ready;
+      requestAnimationFrame(() => window.scrollTo({ top: returning.scrollY, behavior: "instant" }));
+    }, { once: true });
   }
 </script>
