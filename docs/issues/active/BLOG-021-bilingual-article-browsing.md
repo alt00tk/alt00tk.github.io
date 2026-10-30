@@ -62,5 +62,6 @@ loader、content schema、全ページのarticle.id利用、BaseLayout、Article
 
 - 変更: 言語別の記事識別、日英の一覧・記事・Markdown静的生成、対応版のJP/EN切替、英語翻訳注釈、UIとメタ情報の言語対応、言語別検索・一覧復帰を実装。既存日本語のRSS・llms.txtを維持した。
 - 検証: `npm run build` 成功。`PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-bilingual.mjs` 成功。既存日本語のみ、同slug日英、英語11記事の2ページ、Markdown原文、canonical/OGP/hreflang、欠落ペア、同一言語重複・不正slug・空descriptionのビルドエラーを検査した。Chromiumで全記事検索・0件表示・クリア・ページ2から記事への遷移と検索状態の復帰・一覧切替での先頭復帰と言語状態分離・記事のJP/EN切替と原文リンクを確認した。fixtureを削除して日本語のみの最終ビルドも成功。`git diff --check` とIssue一覧検証も成功。
+- UI追加検証: 提示画像に合わせ、JP/ENを細枠・小さい角丸の隣接ボタンにし、選択中を反転表示した。ビルド成功。Chromiumで26pxの外形高さ、選択中と対応版なしの状態、キーボード切替、320px幅での横あふれなし、ダークテーマを確認。追加差分の独立レビューも指摘なし。
 - レビュー観点: 言語とslugから生成する公開URL、共有UI、復帰状態、移行中の欠落ペアと相互hreflang。実記事の翻訳は対象外。検証スクリプトはenディレクトリがない隔離checkoutで実行し、既存翻訳がある場合は開始前に停止する。
 - 統合状態: コミット後もactiveに留め、developへの統合承認を待つ。mainへの統合・push・本番配備は未実施。
