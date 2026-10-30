@@ -1,6 +1,6 @@
 ---
 id: BLOG-023
-status: active
+status: closed
 type: content
 depends_on: [BLOG-021]
 ---
@@ -83,7 +83,8 @@ depends_on: [BLOG-021]
 - 変更: 既存日本語記事11本に対応する英語Markdownを追加。
 - 検証: `npm run build`、全11組のメタデータ・リンクと全22記事のHTML/Markdown突合、`git diff --check`、Issue CLI `list`が成功。
 - レビュー観点: 原文の意味・論調・引用・専門用語、日英公開物の整合。独立Codexレビューを実施。ChatGPTレビュー全11本の結果を受領し、指摘の反映・原文との再照合・英文の再読を完了した。
-- 統合状態: コミットまで。受け入れ条件は全件確認済み。developへのマージ承認待ちのためactiveを維持する。
+- 手動確認: 2026-10-31、ユーザーが実ブラウザで英語記事を確認し、承認した。
+- 統合状態: 受け入れ条件は全件確認済み。人間の明示承認を受け、closedの記録を含めてdevelopへ `--no-ff` で統合する。mainへの統合・push・本番配備は対象外。
 
 ### 翻訳・レビューの実施方法
 
