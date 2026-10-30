@@ -58,10 +58,13 @@ loader、content schema、全ページのarticle.id利用、BaseLayout、Article
 - 独立レビューで、一覧のUI切替先とhreflangを共用すると2ページ目および英語0件時に相互参照が成立しないことを確認した。UIとメタ情報の出力条件を分離し、記事がある先頭一覧同士だけを相互参照させた。記事側も確認し、欠落ペアでは出力されないことを検証した。`scripts/test-bilingual.mjs` に英語0件・両言語2ページ目のhreflang不在と先頭一覧の相互リンクを検査する回帰チェックを追加した。
 - 独立レビュー最終結果: Looks acceptable。構造・境界、実装整合性、セキュリティ、検証の信頼性、保守性と、日本語URL互換・言語状態分離・欠落ペアを確認し、未解決指摘なし。
 
+- ヘッダーちらつきの追加調査で、テーマボタンの初期表示が44pxの横移動を発生させ、375px幅では検索ボタンの有無が一覧・記事間で約51pxの縦移動を発生させることをブラウザで再現した。hidden状態でも操作不能のまま領域を確保し、記事側に検索ボタンと同幅の装飾用プレースホルダーを設けた。`scripts/test-header-layout.mjs` で1000/375/320px幅の初期化前後と一覧・記事間の座標一致を検査し、修正前の失敗と修正後の成功を確認した。追加差分の独立レビューは指摘なし。
+
 ## 完了記録
 
 - 変更: 言語別の記事識別、日英の一覧・記事・Markdown静的生成、対応版のJP/EN切替、英語翻訳注釈、UIとメタ情報の言語対応、言語別検索・一覧復帰を実装。既存日本語のRSS・llms.txtを維持した。
 - 検証: `npm run build` 成功。`PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-bilingual.mjs` 成功。既存日本語のみ、同slug日英、英語11記事の2ページ、Markdown原文、canonical/OGP/hreflang、欠落ペア、同一言語重複・不正slug・空descriptionのビルドエラーを検査した。Chromiumで全記事検索・0件表示・クリア・ページ2から記事への遷移と検索状態の復帰・一覧切替での先頭復帰と言語状態分離・記事のJP/EN切替と原文リンクを確認した。fixtureを削除して日本語のみの最終ビルドも成功。`git diff --check` とIssue一覧検証も成功。
 - UI追加検証: 提示画像に合わせ、JP/ENを細枠・小さい角丸の隣接ボタンにし、選択中を反転表示した。ビルド成功。Chromiumで26pxの外形高さ、選択中と対応版なしの状態、キーボード切替、320px幅での横あふれなし、ダークテーマを確認。追加差分の独立レビューも指摘なし。
+- ちらつき修正検証: `PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-header-layout.mjs` 成功。ビルドと `scripts/test-bilingual.mjs` も再実行成功。初期化時の44px横移動と狭い画面のページ間位置差を解消した。
 - レビュー観点: 言語とslugから生成する公開URL、共有UI、復帰状態、移行中の欠落ペアと相互hreflang。実記事の翻訳は対象外。検証スクリプトはenディレクトリがない隔離checkoutで実行し、既存翻訳がある場合は開始前に停止する。
 - 統合状態: コミット後もactiveに留め、developへの統合承認を待つ。mainへの統合・push・本番配備は未実施。
