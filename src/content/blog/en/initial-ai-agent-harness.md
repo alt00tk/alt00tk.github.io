@@ -14,7 +14,7 @@ Yet listing general principles such as “keep it simple” and “minimize chan
 
 Rules that apply to any project often become abstract.
 
-The problem is not abstraction itself, but that a rule can strongly constrain an agent's behavior while leaving broad room for interpretation.
+The problem is not abstraction itself, but that a rule can strongly constrain an agent's behavior despite being open to widely differing interpretations.
 For example, “minimize changes” could steer an agent toward local fixes while leaving it unclear what “minimal” means.
 
 Perhaps a thin harness is not simply one with few rules or little text.
@@ -27,17 +27,17 @@ What, then, should the initial harness contain?
 For now, I think these two things may be enough:
 
 1. Safety boundaries in areas where a single misjudgment could cause a large loss
-2. Mechanisms that make the agent's work assessable from the outside
+2. Mechanisms that allow humans to evaluate the agent's results from the outside
 
-Constraints around data loss, security boundaries, and similar concerns should be set in advance.
-For things that can be checked mechanically, such as tests, type checks, linting, and builds, we should move toward deterministic verification rather than detailed natural-language instructions.
+Constraints to prevent data loss, protect security boundaries, and address similar concerns should be established in advance.
+For conditions that can be checked mechanically, we should rely on deterministic verification through tests, type checking, linting, and builds rather than detailed natural-language instructions.
 We should then make it possible for humans to observe what was changed, what was verified, and what remains unverified.
 
 The purpose of an initial harness is not to comprehensively teach AI the “right way to think.”
-It is to create a situation where humans can assess the work from the outside even when they delegate it to AI.
+It is to create a situation where humans can assess AI's results from the outside even when they delegate work to it.
 
 Other judgment criteria can be added after observing actual failures and rework.
-Instead of trying to create a complete set of criteria upfront, we can begin with safety boundaries and assessability, then develop the necessary rules from execution results.
+Instead of trying to create a complete set of criteria upfront, we can begin with safety boundaries and the assessability of results, then develop the necessary rules from execution results.
 
-At least in theory, this seems likely to make it easier to balance room for exploration with stability.
+At least on paper, this approach seems likely to make it easier to balance room for exploration with stability.
 The next step is to bring it into an actual project and observe where it falls short, and where it unnecessarily narrows AI's exploration.

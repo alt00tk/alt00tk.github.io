@@ -47,7 +47,7 @@
 - 英語単独: 8件の具体的な語法・参照関係の指摘を反映。`ai-and-intuition` のarticulationとabilityの接続、`ai-code-monoculture-risk-revised` のbecome alike / better in quality、`ai-engineer-ability-evaluation` の概要のthrough、`ai-judgment-criteria-externalization` の推論順序の語順、`choice-overload-and-good-decisions` のevidenceとafterwardの係り先、`software-design-option-exploration` のnarrow down / decision for whichを修正した。
 - 任意提案: `ai-future-proofing` の “removed the future possibility” は可能性そのものの除去と読めるため “set aside that future possibility” に変更。その他の好みによる提案は採用しなかった。いずれも原文の主張・不確実性・視点を維持することを確認した。
 - 類似箇所: 全11本で研究結果と筆者の仮説の区別、暫定的結論、原文のURLと引用者・年の維持を確認した。後続Issueの起案は不要。
-- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、この時点ではChatGPTでのレビューは未実施だった。その後、ユーザー提供のChatGPTレビュー結果を下記の通り受領した。全11本の条件は残り4本の確認まで未完了として扱う。
+- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、この時点ではChatGPTでのレビューは未実施だった。その後、ユーザー提供のChatGPTレビュー結果を下記の通り受領した。全11本の条件は残り3本の確認まで未完了として扱う。
 
 ## 公開物の検証
 
@@ -75,7 +75,7 @@
 | ai-judgment-criteria-externalization.md | `88b6dd594f7b5accb95463e7f30965df4bd776312d7e6be3c2c075bf7440282a` |
 | choice-overload-and-good-decisions.md | `967490d451d52c4b386255060c2e754ab3960c0b877d3b14a971af4cb16be73a` |
 | good-judgment-under-uncertainty.md | `ccfff4492bbf815d094b01081cb2d09f932581b65ac52bf17aab46ed227a9b5a` |
-| initial-ai-agent-harness.md | `d7c827c93d1c9890696c3ed2211216f3343aae7bda5bf8c6e65cb6db890cb7ea` |
+| initial-ai-agent-harness.md | `306633b91b51778ff7521c31c271d4a541e0719e887620f3ffcbe1238faa98a7` |
 | resolving-business-value-conflicts.md | `1c0841282b59a3ac1f35d1d1436157b1f8275e30e1027e97a720970060e8bba4` |
 | software-design-option-exploration.md | `c0e257b999f22dc6b724cb6b109bc53d91f05cec1b4e8faf6f36b3dd73e77475` |
 | technical-constraints-and-business-process.md | `2a0a1e6764d6dc8ba68c36fc9b2e85e23dd171470131d4b3409a630c918d0e79` |
@@ -87,7 +87,7 @@
 - P2（1〜3）: 100件対10件の比較単位を明示し、Reberの抄録を著者自身が確認したという追加表現を除去した。未知の変更による問題の予測を “might arise” とし、発生の確実性を強めない表現へ変更した。
 - P3（4〜8）: 良質な説明を理解する条件を “understand clear, well-founded explanations” で維持した。検証方法の並列、違和感を支持する証拠の指示、本人が経験する意向、最終文の名詞句を最小限修正した。最終文は例示案のAIへの委譲という明示を追加せず、「自分で規則性を発見する経験をどこまで残すか」を維持した。
 - 原文との再照合と英語全文の再読を実施。研究結果と筆者の推測を区別し、主張の強さ・主体性を維持した。front matter、公開日時、Markdown見出し、リンク、数値は変更なし。未指摘箇所は変更なし。
-- 水平確認・再発防止: 本記事の他の研究記述・予測表現も確認し、今回の指摘と同種の追加修正は不要と判断した。全11本の独立CodexレビューをChatGPTレビュー完了と読み替えず、1件目受領時点では残り10本を未受領として管理した。現在の受領数は7/11本。
+- 水平確認・再発防止: 本記事の他の研究記述・予測表現も確認し、今回の指摘と同種の追加修正は不要と判断した。全11本の独立CodexレビューをChatGPTレビュー完了と読み替えず、1件目受領時点では残り10本を未受領として管理した。現在の受領数は8/11本。
 - 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
 
 ## ChatGPTレビュー結果（2件目: ai-code-monoculture-risk-revised.md）
@@ -154,4 +154,15 @@
 - P3（6〜7）: 著者独自の6観点をセミコロンで区切り、調査資源の配分と打ち切りを1観点として保持した。Spetzlerらの6要素は変更せず、後半2つを含む著者の再構成が未検証である留保を維持した。最終文の構文と “doing this” の参照を明確にした。
 - 原文との再照合と英文全文の再読を実施。限定合理性・満足化・実質的合理性・手続き的合理性を区別し、満足化の普遍的な正しさや調査の十分性を保証する主張は追加していない。front matter、公開日時、Markdown構造、研究リンク、数値、/en/articles/の内部リンクを維持し、未指摘箇所は変更なし。
 - 水平確認・再発防止: 本記事内の他の十分性・保証・検証済みかどうかの表現も確認し、追加修正は不要と判断した。レビュー受領・反映は7/11本、残り4本は未受領として区別する。
+- 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
+
+## ChatGPTレビュー結果（8件目: initial-ai-agent-harness.md）
+
+ユーザーからChatGPTレビュー結果を受領。判定は「軽微な修正を推奨。重大な意味の逸脱はなし」。対象稿は修正前の最終英語稿（SHA-256: `d7c827c93d1c9890696c3ed2211216f3343aae7bda5bf8c6e65cb6db890cb7ea`）。指摘5件はいずれも現在Issueの忠実性・可読性の範囲内と判断し、対応した。
+
+- P2（1）: 番号付きリストと目的を述べる本文で、判定対象を作業そのものではなくresultsと明示した。後段のassessabilityも成果を指すと補足し、何を変更・検証したかと何が未確認かの観測要件は維持した。
+- P2（2）: 機械的に判定する対象をconditions、テスト・型チェック・Lint・ビルドを検証手段として示した。限定を機械的に判定できる条件に保ち、自然言語による指示を全面的に排除する主張にしていない。
+- P3（3〜5）: 解釈の幅が広いにもかかわらず行動を強く制約するという問題を明確にした。事前の制約はデータ損失の防止・セキュリティ境界の保護として自然に記述し、具体的な要件は追加していない。結びの “in theory” を “on paper” に変更し、実プロジェクトで未検証の暫定的な見立てであることを保持した。
+- 原文との再照合と英文全文の再読を実施。薄いハーネスをルール数だけで定義せず、安全境界と成果の判定可能性という2要素、実際の失敗・手戻りから基準を追加する方針を維持した。内部推論の完全な観測は主張していない。front matter、公開日時、Markdown構造、技術用語、番号付きリストを維持し、指摘と関連する成果の判定表現以外は変更なし。
+- 水平確認・再発防止: 本記事のwork/results/assessabilityの指示対象を確認し、後段のassessabilityも成果と明示した。他の追加修正は不要と判断した。レビュー受領・反映は8/11本、残り3本は未受領として区別する。
 - 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
