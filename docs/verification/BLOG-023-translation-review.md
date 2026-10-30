@@ -47,7 +47,7 @@
 - 英語単独: 8件の具体的な語法・参照関係の指摘を反映。`ai-and-intuition` のarticulationとabilityの接続、`ai-code-monoculture-risk-revised` のbecome alike / better in quality、`ai-engineer-ability-evaluation` の概要のthrough、`ai-judgment-criteria-externalization` の推論順序の語順、`choice-overload-and-good-decisions` のevidenceとafterwardの係り先、`software-design-option-exploration` のnarrow down / decision for whichを修正した。
 - 任意提案: `ai-future-proofing` の “removed the future possibility” は可能性そのものの除去と読めるため “set aside that future possibility” に変更。その他の好みによる提案は採用しなかった。いずれも原文の主張・不確実性・視点を維持することを確認した。
 - 類似箇所: 全11本で研究結果と筆者の仮説の区別、暫定的結論、原文のURLと引用者・年の維持を確認した。後続Issueの起案は不要。
-- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、ChatGPTでのレビューは実施していない。Issueの「ChatGPTレビュー」条件は代替の人間承認または別途実施まで未完了として扱う。
+- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、この時点ではChatGPTでのレビューは未実施だった。その後、ユーザー提供のChatGPTレビュー結果を下記の通り受領した。全11本の条件は残り10本の確認まで未完了として扱う。
 
 ## 公開物の検証
 
@@ -68,7 +68,7 @@
 
 | ファイル | SHA-256 |
 | --- | --- |
-| ai-and-intuition.md | `6b16ec4ebd30364036990a3aa8fa5626f83625f00d3c89c7d064efb62a411991` |
+| ai-and-intuition.md | `4b51c32d5f22610557ae25af80aed02b8f580fedaea90fc9744045ea8b214ca2` |
 | ai-code-monoculture-risk-revised.md | `e6e50429ca418b86b130c2d6604490cb2f7b2341b7e5529bf048c3fd7711468f` |
 | ai-engineer-ability-evaluation.md | `5ba7bdf1b68b7a340a15e9905a62e94b0dd5b307cbd20a43733a35d7aa5c7873` |
 | ai-future-proofing.md | `ca848bcc548f1cb00dbb17e019dd552ae254944d36d6a6fa25eaf1437cde8edc` |
@@ -79,3 +79,13 @@
 | resolving-business-value-conflicts.md | `1c0841282b59a3ac1f35d1d1436157b1f8275e30e1027e97a720970060e8bba4` |
 | software-design-option-exploration.md | `c0e257b999f22dc6b724cb6b109bc53d91f05cec1b4e8faf6f36b3dd73e77475` |
 | technical-constraints-and-business-process.md | `2a0a1e6764d6dc8ba68c36fc9b2e85e23dd171470131d4b3409a630c918d0e79` |
+
+## ChatGPTレビュー結果（1件目: ai-and-intuition.md）
+
+ユーザーからChatGPTレビュー結果を受領。判定は「軽微な修正を推奨。重大な意味の逸脱はなし」。対象稿は修正前の最終英語稿（SHA-256: `6b16ec4ebd30364036990a3aa8fa5626f83625f00d3c89c7d064efb62a411991`）。指摘8件はすべて現在Issueの忠実性・可読性の範囲内と判断した。
+
+- P2（1〜3）: 100件対10件の比較単位を明示し、Reberの抄録を著者自身が確認したという追加表現を除去した。未知の変更による問題の予測を “might arise” とし、発生の確実性を強めない表現へ変更した。
+- P3（4〜8）: 良質な説明を理解する条件を “understand clear, well-founded explanations” で維持した。検証方法の並列、違和感を支持する証拠の指示、本人が経験する意向、最終文の名詞句を最小限修正した。最終文は例示案のAIへの委譲という明示を追加せず、「自分で規則性を発見する経験をどこまで残すか」を維持した。
+- 原文との再照合と英語全文の再読を実施。研究結果と筆者の推測を区別し、主張の強さ・主体性を維持した。front matter、公開日時、Markdown見出し、リンク、数値は変更なし。未指摘箇所は変更なし。
+- 水平確認・再発防止: 本記事の他の研究記述・予測表現も確認し、今回の指摘と同種の追加修正は不要と判断した。全11本の独立CodexレビューをChatGPTレビュー完了と読み替えず、残り10本は未受領として管理する。
+- 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
