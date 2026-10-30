@@ -15,9 +15,41 @@ function build(ok = true, pattern) {
 const html = (path) => readFile(new URL(`../dist/${path}`, import.meta.url), 'utf8');
 try { await access(english); throw new Error('This fixture test requires no existing en directory; run in an isolated checkout.'); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
+async function checkDiscovery(expectedEnglish) {
+  const englishRss = await html('en/rss.xml');
+  assert.match(englishRss, /<language>en<\/language>/);
+  assert.match(englishRss, /Thoughts on technology, design, and AI/);
+  assert.equal((englishRss.match(/<item>/g) ?? []).length, expectedEnglish);
+  const japaneseRss = await html('rss.xml');
+  assert.match(japaneseRss, /<language>ja<\/language>/);
+  assert.doesNotMatch(japaneseRss, /\/en\/articles\//);
+  const index = await html('llms.txt');
+  const [japanese, english] = index.split('## English articles (en)');
+  assert.ok(english !== undefined);
+  assert.doesNotMatch(japanese, /\/en\/articles\//);
+  assert.equal((english.match(/^- /gm) ?? []).length, expectedEnglish);
+  for (const match of index.matchAll(/\]\((https:[^)]+)\)/g)) {
+    const path = new URL(match[1]).pathname.slice(1);
+    await access(new URL(`../dist/${path}`, import.meta.url));
+    await access(new URL(`../dist/${path.replace(/\.md$/, '/index.html')}`, import.meta.url));
+  }
+  for (const [path, feed] of [['index.html', '/rss.xml'], ['en/index.html', '/en/rss.xml'],
+    ...(expectedEnglish ? [['en/articles/ai-and-intuition/index.html', '/en/rss.xml'], ['articles/ai-and-intuition/index.html', '/rss.xml']] : [])]) {
+    const page = await html(path);
+    assert.match(page, new RegExp(`rel="alternate" type="application/rss\\+xml" title="notes RSS" href="https:[^"]*${feed}"`));
+    assert.ok(page.includes(`href="${feed}"`));
+    assert.ok(page.includes('href="/llms.txt"'));
+  }
+  for (const match of englishRss.matchAll(/<item>.*?<link>(.*?)<\/link>.*?<\/item>/g)) {
+    assert.ok(new URL(match[1]).pathname.startsWith('/en/articles/'));
+    await access(new URL(`../dist/${new URL(match[1]).pathname.slice(1)}index.html`, import.meta.url));
+  }
+}
 let server;
 try {
   build();
+  await checkDiscovery(0);
+  const originalRss = await html('rss.xml');
   assert.doesNotMatch(await html('index.html'), /href="\/en\/"/);
   assert.doesNotMatch(await html('en/index.html'), /hreflang=/);
   await mkdir(english);
@@ -25,6 +57,10 @@ try {
   const names = [slug, ...Array.from({length: 10}, (_, i) => `fixture-${i}`)];
   for (const [i, name] of names.entries()) await writeFile(new URL(`${name}.md`, english), fixture(`English title ${i}`));
   build();
+  await checkDiscovery(11);
+  assert.equal(await html('rss.xml'), originalRss);
+  assert.match(await html('en/rss.xml'), /English title 0/);
+  assert.match(await html('en/rss.xml'), /English searchable overview/);
   assert.equal(await html(`en/articles/${slug}.md`), fixture('English title 0'));
   const article = await html(`en/articles/${slug}/index.html`);
   assert.match(article, /lang="en"/);
@@ -39,7 +75,7 @@ try {
   assert.match(await html('en/index.html'), /hreflang="ja" href="https:[^"]*\/"/);
   assert.doesNotMatch(await html('en/articles/fixture-0/index.html'), /hreflang="ja"/);
   assert.doesNotMatch(await html('rss.xml'), /English title/);
-  assert.doesNotMatch(await html('llms.txt'), /English title/);
+  assert.match(await html('llms.txt'), /English title/);
   const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
   server = spawn('npm', ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4329'], {cwd:root, stdio:'ignore'});
   const browser = await chromium.launch({ headless:true, args:['--no-sandbox'] });
