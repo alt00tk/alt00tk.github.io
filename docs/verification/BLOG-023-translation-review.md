@@ -47,7 +47,7 @@
 - 英語単独: 8件の具体的な語法・参照関係の指摘を反映。`ai-and-intuition` のarticulationとabilityの接続、`ai-code-monoculture-risk-revised` のbecome alike / better in quality、`ai-engineer-ability-evaluation` の概要のthrough、`ai-judgment-criteria-externalization` の推論順序の語順、`choice-overload-and-good-decisions` のevidenceとafterwardの係り先、`software-design-option-exploration` のnarrow down / decision for whichを修正した。
 - 任意提案: `ai-future-proofing` の “removed the future possibility” は可能性そのものの除去と読めるため “set aside that future possibility” に変更。その他の好みによる提案は採用しなかった。いずれも原文の主張・不確実性・視点を維持することを確認した。
 - 類似箇所: 全11本で研究結果と筆者の仮説の区別、暫定的結論、原文のURLと引用者・年の維持を確認した。後続Issueの起案は不要。
-- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、この時点ではChatGPTでのレビューは未実施だった。その後、ユーザー提供のChatGPTレビュー結果を下記の通り受領した。全11本の条件は残り8本の確認まで未完了として扱う。
+- 実施環境の制約: ここで実施したのは独立Codexサブエージェントによるレビューであり、この時点ではChatGPTでのレビューは未実施だった。その後、ユーザー提供のChatGPTレビュー結果を下記の通り受領した。全11本の条件は残り7本の確認まで未完了として扱う。
 
 ## 公開物の検証
 
@@ -71,7 +71,7 @@
 | ai-and-intuition.md | `4b51c32d5f22610557ae25af80aed02b8f580fedaea90fc9744045ea8b214ca2` |
 | ai-code-monoculture-risk-revised.md | `e202426affc7e2c9a65482d54394270b1c5ae270ce3ba230fc1c3a3ae238c3c5` |
 | ai-engineer-ability-evaluation.md | `e6241d2dec1f50950e8882b9b87f6fbf009c056372e7c2f9d147fcd07531be7e` |
-| ai-future-proofing.md | `ca848bcc548f1cb00dbb17e019dd552ae254944d36d6a6fa25eaf1437cde8edc` |
+| ai-future-proofing.md | `d77f17e2b95cdc9560bad46c003736f9541efd3449659a57a8d8a108779ccedb` |
 | ai-judgment-criteria-externalization.md | `7db77778aa96c019dbb2372293ec46b63485fb7ea46d9b909ab578c05b7705e3` |
 | choice-overload-and-good-decisions.md | `76c10005c0bbe3a301584508d7c16b1a19fefcaf7337163733f6a7cfd8398918` |
 | good-judgment-under-uncertainty.md | `8f9160eafa27e1b8e5d60f75b93ffe73a97f477ea6e2ce56ac1a0baeb2ff7e77` |
@@ -87,7 +87,7 @@
 - P2（1〜3）: 100件対10件の比較単位を明示し、Reberの抄録を著者自身が確認したという追加表現を除去した。未知の変更による問題の予測を “might arise” とし、発生の確実性を強めない表現へ変更した。
 - P3（4〜8）: 良質な説明を理解する条件を “understand clear, well-founded explanations” で維持した。検証方法の並列、違和感を支持する証拠の指示、本人が経験する意向、最終文の名詞句を最小限修正した。最終文は例示案のAIへの委譲という明示を追加せず、「自分で規則性を発見する経験をどこまで残すか」を維持した。
 - 原文との再照合と英語全文の再読を実施。研究結果と筆者の推測を区別し、主張の強さ・主体性を維持した。front matter、公開日時、Markdown見出し、リンク、数値は変更なし。未指摘箇所は変更なし。
-- 水平確認・再発防止: 本記事の他の研究記述・予測表現も確認し、今回の指摘と同種の追加修正は不要と判断した。全11本の独立CodexレビューをChatGPTレビュー完了と読み替えず、1件目受領時点では残り10本を未受領として管理した。現在の受領数は3/11本。
+- 水平確認・再発防止: 本記事の他の研究記述・予測表現も確認し、今回の指摘と同種の追加修正は不要と判断した。全11本の独立CodexレビューをChatGPTレビュー完了と読み替えず、1件目受領時点では残り10本を未受領として管理した。現在の受領数は4/11本。
 - 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
 
 ## ChatGPTレビュー結果（2件目: ai-code-monoculture-risk-revised.md）
@@ -110,4 +110,15 @@
 - P3（7〜8）: 「限界」は理解だけに限定せず “the limits of my understanding and verification” とし、直前の検証手段を含む文脈に対応させた。末尾では評価の証拠と評価精度の双方が未解決であることを完全な構文で示した。
 - 原文との再照合と英文全文の再読を実施。成果・本人の判断・判断の適切さ、AI自身の適応・人間自身の適応を区別し、研究の知見と筆者の考察を維持した。front matter、公開日時、Markdown構造、リンク、数値は維持し、未指摘箇所は変更なし。
 - 水平確認・再発防止: 本記事の他のjudgment表現も原文の「判断」と「判断力」の文脈に照らして確認し、追加修正は不要と判断した。レビュー受領・反映は3/11本、残り8本は未受領として区別する。
+- 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
+
+## ChatGPTレビュー結果（4件目: ai-future-proofing.md）
+
+ユーザーからChatGPTレビュー結果を受領。判定は「軽微な修正を推奨。重大な意味の逸脱はなし」。対象稿は修正前の最終英語稿（SHA-256: `ca848bcc548f1cb00dbb17e019dd552ae254944d36d6a6fa25eaf1437cde8edc`）。指摘7件はいずれも現在Issueの忠実性・可読性の範囲内と判断し、対応した。
+
+- P2（1〜2）: 契約と境界を別の選択肢として読ませないよう “a stable contract at a boundary” に変更した。アーキテクチャ上重要な意思決定に独立した人間のレビューを集中させることを明示し、AIが現在の必要性を説明し人間が判断する役割分担を維持した。通常のコードレビューを人間が一切行わないという主張は追加していない。
+- P3（3〜5）: 見出しの “Enough” を “Sufficient” に変更し、将来の仮説をコードへ無理に固定する表現と、筆者が採用する判断基準の提示を自然な英語にした。将来への投機への批判の強さと、個人的な判断基準である位置づけを維持した。
+- P3（6〜7）: 作り直す対象をcodeと明示し、必要時の情報で作り直すことが従来より取りやすい「選択肢」であると表現した。不要なコードが日々の推論でも継続的なコンテキストコストになることを明確にし、金額や測定結果は追加していない。
+- 原文との再照合と英文全文の再読を実施。将来の差し替え可能性と現在の設計上の必要性、実装コストと継続的なコンテキストコスト、決定論的検証と人間の判断の役割を区別した。front matter、公開日時、Markdown構造、リンク、技術用語を維持し、未指摘箇所は変更なし。
+- 水平確認・再発防止: 本記事内の他のinterface・境界・レビュー対象の表現も確認し、追加修正は不要と判断した。レビュー受領・反映は4/11本、残り7本は未受領として区別する。
 - 修正後検証: `npm run build`、全11組・22記事の一時検証スクリプト、`git diff --check`、Issue CLI `list`がすべて成功。
