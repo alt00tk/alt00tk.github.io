@@ -1,6 +1,6 @@
 ---
 id: BLOG-021
-status: active
+status: closed
 type: feature
 depends_on: []
 ---
@@ -67,4 +67,4 @@ loader、content schema、全ページのarticle.id利用、BaseLayout、Article
 - UI追加検証: 提示画像に合わせ、JP/ENを細枠・小さい角丸の隣接ボタンにし、選択中を反転表示した。ビルド成功。Chromiumで26pxの外形高さ、選択中と対応版なしの状態、キーボード切替、320px幅での横あふれなし、ダークテーマを確認。追加差分の独立レビューも指摘なし。
 - ちらつき修正検証: `PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-header-layout.mjs` 成功。ビルドと `scripts/test-bilingual.mjs` も再実行成功。初期化時の44px横移動と狭い画面のページ間位置差を解消した。
 - レビュー観点: 言語とslugから生成する公開URL、共有UI、復帰状態、移行中の欠落ペアと相互hreflang。実記事の翻訳は対象外。検証スクリプトはenディレクトリがない隔離checkoutで実行し、既存翻訳がある場合は開始前に停止する。
-- 統合状態: コミット後もactiveに留め、developへの統合承認を待つ。mainへの統合・push・本番配備は未実施。
+- 統合状態: 人間の明示承認を受け、closedの記録を含めてdevelopへ `--no-ff` で統合する。mainへの統合・push・本番配備は対象外。
