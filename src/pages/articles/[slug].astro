@@ -1,69 +1,9 @@
 ---
-import { getCollection, render } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { formatPublishedAt, sortArticlesByPublishedAt } from "../../lib/blog";
-
+import { getCollection } from "astro:content";
+import ArticlePage from "../../components/ArticlePage.astro";
+import { articleLanguage, articleSlug } from "../../lib/blog";
 export async function getStaticPaths() {
-  const articles = sortArticlesByPublishedAt(await getCollection("blog"));
-
-  return articles.map((article) => ({
-    params: { slug: article.id },
-    props: { article },
-  }));
+ return (await getCollection("blog")).filter(a => articleLanguage(a) === "ja").map(article => ({params: {slug: articleSlug(article)}, props: {article}}));
 }
-
-const { article } = Astro.props;
-const { Content } = await render(article);
 ---
-
-<BaseLayout
-  title={`${article.data.title} — notes`}
-  description={article.data.description}
-  publishedAt={article.data.publishedAt}
->
-  <main class="site-main">
-    <article class="article">
-      <header class="article-header">
-        <time datetime={article.data.publishedAt}>
-          {formatPublishedAt(article.data.publishedAt)}
-        </time>
-        <h1>{article.data.title}</h1>
-        <p class="article-lead">{article.data.description}</p>
-      </header>
-      <div class="article-content">
-        <Content />
-      </div>
-      <nav class="article-nav" aria-label="記事ナビゲーション">
-        <a href="/">← Articles</a>
-      </nav>
-    </article>
-  </main>
-</BaseLayout>
-
-<script>
-  import { LIST_ORIGIN, LIST_RETURN, readListContext, saveListContext } from "../../lib/article-list-context";
-
-  const returnLink = document.querySelector<HTMLAnchorElement>(".article-nav a");
-  const context = readListContext(LIST_ORIGIN);
-  if (returnLink && context && context.articleUrl === location.href) {
-    const source = new URL(context.listUrl);
-    source.hash = ""; // Referrers never include fragments; retain it in the actual return URL.
-    if (document.referrer === source.href) {
-      returnLink.href = context.listUrl;
-      returnLink.addEventListener("click", (event) => {
-        if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-        saveListContext(LIST_RETURN, context);
-      });
-    }
-  }
-
-  for (const link of document.querySelectorAll<HTMLAnchorElement>(".article-content a[href]")) {
-    if (
-      (link.protocol === "http:" || link.protocol === "https:") &&
-      link.origin !== window.location.origin
-    ) {
-      link.target = "_blank";
-      link.relList.add("noopener");
-    }
-  }
-</script>
+<ArticlePage article={Astro.props.article} />

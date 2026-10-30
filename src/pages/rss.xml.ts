@@ -1,14 +1,14 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
-import { sortArticlesByPublishedAt } from "../lib/blog";
+import { sortArticlesByPublishedAt, articleLanguage, articleSlug } from "../lib/blog";
 
 export const GET: APIRoute = async ({ site }) => {
   if (!site) {
     throw new Error("RSS generation requires the site URL in astro.config.mjs.");
   }
 
-  const articles = sortArticlesByPublishedAt(await getCollection("blog"));
+  const articles = sortArticlesByPublishedAt((await getCollection("blog")).filter(a => articleLanguage(a) === "ja"));
 
   return rss({
     title: "notes",
@@ -16,7 +16,7 @@ export const GET: APIRoute = async ({ site }) => {
     site,
     items: articles.map((article) => ({
       title: article.data.title,
-      link: new URL(`/articles/${article.id}/`, site).href,
+      link: new URL(`/articles/${articleSlug(article)}/`, site).href,
       description: article.data.description,
       pubDate: new Date(article.data.publishedAt),
     })),

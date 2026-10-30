@@ -98,13 +98,21 @@ button:focus-visible {
   margin-left: auto;
 }
 
-.theme-picker:not([hidden]) {
+.search-placeholder {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+}
+
+.theme-picker {
   display: block;
   position: relative;
+  width: 44px;
+  height: 44px;
 }
 
 .theme-trigger,
-.search-trigger:not([hidden]) {
+.search-trigger {
   display: flex;
   width: 44px;
   height: 44px;
@@ -116,6 +124,13 @@ button:focus-visible {
   color: var(--text);
   font: inherit;
   cursor: pointer;
+}
+
+/* Keep header geometry stable while scripts initialize each control.
+   Hidden controls remain unfocusable and unavailable to assistive technology. */
+.theme-picker[hidden],
+.search-trigger[hidden] {
+  visibility: hidden;
 }
 
 .theme-icon[hidden] {

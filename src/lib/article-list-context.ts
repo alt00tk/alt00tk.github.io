@@ -6,8 +6,9 @@ export interface ArticleListContext {
   query: string;
 }
 
-export const LIST_ORIGIN = "notes-list-origin";
-export const LIST_RETURN = "notes-list-return";
+const language = typeof document !== "undefined" && document.documentElement.lang === "en" ? "en" : "ja";
+export const LIST_ORIGIN = `notes-list-origin-${language}`;
+export const LIST_RETURN = `notes-list-return-${language}`;
 
 export function saveListContext(key: string, context: ArticleListContext) {
   try {
@@ -29,9 +30,9 @@ export function readListContext(key: string): ArticleListContext | undefined {
     const article = new URL(context.articleUrl);
     if (
       list.origin === location.origin &&
-      (list.pathname === "/" || /^\/articles\/page\/[1-9]\d*\/$/.test(list.pathname)) &&
+      (list.pathname === (language === "en" ? "/en/" : "/") || new RegExp(`^${language === "en" ? "/en" : ""}/articles/page/[1-9]\\d*/$`).test(list.pathname)) &&
       article.origin === location.origin &&
-      /^\/articles\/[^/]+\/$/.test(article.pathname) &&
+      new RegExp(`^${language === "en" ? "/en" : ""}/articles/[^/]+/$`).test(article.pathname) &&
       typeof context.scrollY === "number" && Number.isFinite(context.scrollY) && context.scrollY >= 0 &&
       typeof context.searchOpen === "boolean" && typeof context.query === "string"
     ) return context;
