@@ -19,29 +19,29 @@ It can be inferior to optimization under risk, where probabilities can be used, 
 [Simon (1976)](https://doi.org/10.1017/CBO9780511572203.006) also distinguished substantive rationality, which asks whether a choice suits its purpose, from procedural rationality, which focuses on the process of finding an effective choice.
 The quality of a decision cannot be fully captured by the option ultimately chosen.
 
-## Does How We Investigate Matter More Than How Much Information We Gather?
+## Does the Way We Investigate Matter More Than the Amount of Information We Gather?
 
 Further investigation takes time and money.
-There are methods for calculating the [expected value of sample information (EVSI)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7612319/), but they require a model that represents possible outcomes and their probabilities.
-They cannot cover everything in situations where we “don't know what we don't know.”
-How, then, can we establish that we have investigated enough?
+There are methods for calculating the [expected value of sample information (EVSI)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7612319/), but they require a model of possible outcomes and their probabilities.
+Such models cannot fully account for situations where we “don't know what we don't know.”
+How, then, can we tell whether we have investigated enough?
 
 [Gigerenzer and Brighton (2009)](https://doi.org/10.1111/j.1756-8765.2008.01006.x) reviewed research showing that methods using little information or computation can achieve high predictive accuracy under certain conditions.
 In ecological rationality, how well a method works depends on its fit with the environment.
-There is value in choosing what to check, as well as in gathering more information.
+Rather than simply gathering more information, there is also value in deciding what to verify.
 
 For example, when choosing a technology, a prototype might help resolve uncertainty about performance, while a recovery test might reveal how it behaves when failures occur.
-Still, judging which method of verification is appropriate also requires knowledge, and does not guarantee that the investigation is sufficient.
+Still, choosing an appropriate verification method also requires knowledge. And even choosing the right method does not guarantee that the investigation is sufficient.
 
 ## Understanding Decision Quality Through Its Components
 
 [Spetzler et al. (2016)](https://doi.org/10.1002/9781119176657.ch02) identify six elements that support decision quality: framing, alternatives, reliable information, values and trade-offs, reasoning, and commitment to action.
 This gives us things we can examine before deciding, independently of the outcome of the choice.
 
-Drawing on these ideas, I want to focus on alignment with purpose, alternatives, information and uncertainty, reasoning and trade-offs, the allocation of resources to investigation and when to stop, and the ability to adapt after deciding.
+Drawing on these ideas, I want to focus on six aspects: alignment with purpose; alternatives; information and uncertainty; reasoning and trade-offs; how resources are allocated to investigation and when to stop; and the ability to adapt after deciding.
 This is my own reconstruction, including the last two elements, and has not been validated as a set of necessary and sufficient conditions.
 
 The potential loss and reversibility differ from one decision to another.
 I want to pay attention to which elements are missing and the value of filling those gaps.
 These may be useful as clues to what I have overlooked and when to stop investigating, rather than as criteria that guarantee a good decision.
-How much weight each element deserves, and whether doing this actually improves decision quality, still need to be tested.
+It remains to be tested how much weight each element should carry and whether this approach actually improves decision quality.
