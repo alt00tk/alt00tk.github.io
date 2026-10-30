@@ -1,6 +1,6 @@
 ---
 id: BLOG-022
-status: active
+status: closed
 type: feature
 depends_on: [BLOG-021]
 ---
@@ -56,4 +56,5 @@ RSS・llms.txt・共通ヘッダーを対象にする。言語別URL生成と記
 - 変更: /en/rss.xmlに英語記事と英語のフィード概要・言語情報を生成。日本語RSSとの生成処理を共通化し、ヘッダーとRSS alternateを表示言語に合わせた。llms.txtに日英別のMarkdown一覧を追加。
 - 検証: `npm run build` 成功。`PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-bilingual.mjs` 成功。英語0件・日英同slugと英語11件でRSSの言語・英語タイトルと概要・件数、日本語RSSの不変、llms.txtの言語分離と全掲載先HTML/Markdownの存在、各言語の一覧・記事のRSS alternateとヘッダー導線を確認した。既存の検索・言語切替・一覧復帰のブラウザ検証、loader異常入力検証も成功。fixture除去後の日本語のみのビルド、`git diff --check`、Issue一覧検証も成功。Chromiumはサンドボックス内で起動できなかったため、許可された制限外実行で検証した。
 - レビュー観点: 日本語購読互換、英語0件・日英同名時の言語分離、生成HTML/Markdownと外部案内の一致。
-- 統合状態: コミットまで。developへのマージ承認待ちのためactiveを維持する。
+- 手動確認: ユーザーが実ブラウザで日本語RSS、英語0件のRSS、日英別llms.txt、日英ヘッダー導線とRSS alternateを確認し、承認した。
+- 統合状態: 人間の明示承認を受け、closedの記録を含めてdevelopへ `--no-ff` で統合する。mainへの統合・push・本番配備は対象外。
