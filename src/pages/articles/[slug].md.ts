@@ -1,11 +1,12 @@
 import type { APIRoute, GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
+import { articleLanguage, articleSlug } from "../../lib/blog";
 
 export const getStaticPaths = (async () => {
-  const articles = await getCollection("blog");
+  const articles = (await getCollection("blog")).filter(a => articleLanguage(a) === "ja");
 
   return articles.map((article) => ({
-    params: { slug: article.id },
+    params: { slug: articleSlug(article) },
     props: { article },
   }));
 }) satisfies GetStaticPaths;

@@ -1,37 +1,10 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
-import ArticleList from "../../../components/ArticleList.astro";
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { getTotalPages, sortArticlesByPublishedAt } from "../../../lib/blog";
-
-interface Props {
-  articles: CollectionEntry<"blog">[];
-  currentPage: number;
-  totalPages: number;
-}
-
+import { getCollection } from "astro:content";
+import ListingPage from "../../../components/ListingPage.astro";
+import { articleLanguage, getTotalPages } from "../../../lib/blog";
 export async function getStaticPaths() {
-  const articles = sortArticlesByPublishedAt(await getCollection("blog"));
-  const totalPages = getTotalPages(articles.length);
-
-  return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => {
-    const currentPage = index + 2;
-    return {
-      params: { page: String(currentPage) },
-      props: {
-        articles,
-        currentPage,
-        totalPages,
-      },
-    };
-  });
+ const articles = (await getCollection("blog")).filter(a => articleLanguage(a) === "ja");
+ return Array.from({length: Math.max(0, getTotalPages(articles.length)-1)}, (_, i) => ({params: {page: String(i+2)}, props: {currentPage: i+2}}));
 }
-
-const { articles, currentPage, totalPages } = Astro.props;
 ---
-
-<BaseLayout title="notes" searchable>
-  <main class="site-main">
-    <ArticleList articles={articles} currentPage={currentPage} totalPages={totalPages} />
-  </main>
-</BaseLayout>
+<ListingPage language="ja" currentPage={Astro.props.currentPage} />

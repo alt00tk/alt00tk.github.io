@@ -1,0 +1,9 @@
+---
+import { getCollection } from "astro:content";
+import ArticlePage from "../../../components/ArticlePage.astro";
+import { articleLanguage, articleSlug } from "../../../lib/blog";
+export async function getStaticPaths() {
+ return (await getCollection("blog")).filter(a => articleLanguage(a) === "en").map(article => ({params: {slug: articleSlug(article)}, props: {article}}));
+}
+---
+<ArticlePage article={Astro.props.article} />
