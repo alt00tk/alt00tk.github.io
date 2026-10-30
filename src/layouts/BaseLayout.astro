@@ -48,7 +48,7 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
     <link rel="canonical" href={canonicalUrl} />
     {alternate && includeAlternates && <link rel="alternate" hreflang={language === "en" ? "ja" : "en"} href={new URL(alternate, Astro.site)} />}
     {alternate && includeAlternates && <link rel="alternate" hreflang={language} href={canonicalUrl} />}
-    {language === "ja" && <link rel="alternate" type="application/rss+xml" title="notes RSS" href={new URL("/rss.xml", Astro.site)} />}
+    <link rel="alternate" type="application/rss+xml" title="notes RSS" href={new URL(language === "en" ? "/en/rss.xml" : "/rss.xml", Astro.site)} />
     <meta property="og:title" content={title} />
     <meta property="og:type" content={publishedAt ? "article" : "website"} />
     <meta property="og:url" content={canonicalUrl} />
@@ -89,9 +89,9 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
           <ThemeMenu language={language} />
           <a
             class="header-icon-link"
-            href="/rss.xml"
-            aria-label={language === "en" ? "Subscribe to Japanese articles via RSS" : "記事の更新をRSSで購読する"}
-            title={language === "en" ? "Subscribe to Japanese articles via RSS" : "記事の更新をRSSで購読する"}
+            href={language === "en" ? "/en/rss.xml" : "/rss.xml"}
+            aria-label={language === "en" ? "Subscribe to articles via RSS" : "記事の更新をRSSで購読する"}
+            title={language === "en" ? "Subscribe to articles via RSS" : "記事の更新をRSSで購読する"}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true" focusable="false">
               <circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none" />
@@ -101,8 +101,8 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
           <a
             class="header-icon-link"
             href="/llms.txt"
-            aria-label={language === "en" ? "Japanese article Markdown index for AI (llms.txt)" : "AI向けの全記事Markdown案内（llms.txt）"}
-            title={language === "en" ? "Japanese article Markdown index for AI (llms.txt)" : "AI向けの全記事Markdown案内（llms.txt）"}
+            aria-label={language === "en" ? "Article Markdown index for AI (llms.txt)" : "AI向けの全記事Markdown案内（llms.txt）"}
+            title={language === "en" ? "Article Markdown index for AI (llms.txt)" : "AI向けの全記事Markdown案内（llms.txt）"}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <rect x="4" y="7" width="16" height="13" rx="3" />
