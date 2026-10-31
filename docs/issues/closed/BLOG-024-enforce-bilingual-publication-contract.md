@@ -1,6 +1,6 @@
 ---
 id: BLOG-024
-status: active
+status: closed
 type: feature
 depends_on: [BLOG-021, BLOG-023]
 ---
@@ -69,4 +69,5 @@ depends_on: [BLOG-021, BLOG-023]
 - 検証: `npm run build` 成功、既存日英11組、26 HTMLページと日英各11本のMarkdownを生成。`git diff --check` とIssue CLI `list` 成功。既存main向け公開CIのnpm ciとnpm run buildの経路を維持した。
 - 整理後の再検証: `node scripts/test-publication-contract.mjs` 全19ケース、`npm run build`、`git diff --check` が成功。
 - レビュー観点: loaderとURL型の境界、Markdown構文の実際の描画結果、本文とテンプレートの検査境界、異常系の非0終了。追加整理ではURLの生成結果とテスト入力の同値性を確認済み。
-- 統合状態: コミットまでを実施。developへのマージ承諾前のためactiveに留める。
+- 手動確認: ユーザーがプレビューできることを確認した。画面やブラウザ操作の変更がないため、追加の実ブラウザ動作確認は不要と判断した。
+- 統合状態: 人間の明示承認を受け、closedの記録を含めてdevelopへ `--no-ff` で統合する。mainへの統合、push、本番配備は対象外。
