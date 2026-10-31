@@ -1,12 +1,11 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { formatPublishedAt, articleLanguage, articleSlug, articleUrl, listUrl } from "../lib/blog";
 
 const { article } = Astro.props;
 const language = articleLanguage(article);
-const counterpart = (await getCollection("blog")).find(a => articleSlug(a) === articleSlug(article) && articleLanguage(a) !== language);
-const alternate = counterpart ? articleUrl(counterpart) : undefined;
+const alternate = articleUrl({ id: `${language === "en" ? "ja" : "en"}/${articleSlug(article)}` });
 const { Content } = await render(article);
 ---
 
@@ -20,7 +19,7 @@ const { Content } = await render(article);
   <main class:list={["site-main", { "site-main--translated": language === "en" }]}>
     {language === "en" && (
       <aside class="translation-notice" aria-label="Translation note">
-        <p>This article was translated from Japanese using AI and may contain translation errors. Please refer to {counterpart ? <a href={alternate}>the original Japanese version</a> : "the original Japanese version"} for the author's intended meaning.</p>
+        <p>This article was translated from Japanese using AI and may contain translation errors. Please refer to <a href={alternate}>the original Japanese version</a> for the author's intended meaning.</p>
       </aside>
     )}
     <article class="article">

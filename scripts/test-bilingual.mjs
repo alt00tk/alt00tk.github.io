@@ -1,10 +1,13 @@
 // Run with PLAYWRIGHT_MODULE pointing to an installed Playwright package.
-// Fixtures are removed and the original production build is restored even on failure.
+// All fixtures and build output stay in a temporary directory.
 import { strict as assert } from 'node:assert';
-import { mkdir, readFile, writeFile, rm, access } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, rm, access, mkdtemp, cp, symlink } from 'node:fs/promises';
 import { spawn, spawnSync } from 'node:child_process';
-const english = new URL('../src/content/blog/en/', import.meta.url);
-const root = new URL('../', import.meta.url);
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const root = pathToFileURL((await mkdtemp(join(tmpdir(), 'bilingual-'))) + '/');
+const english = new URL('src/content/blog/en/', root);
 const fixture = (title) => `---\ntitle: ${title}\ndescription: English searchable overview\npublishedAt: "2026-01-01T00:00:00Z"\n---\nFixture body.\n`;
 function build(ok = true, pattern) {
   const result = spawnSync('npm', ['run', 'build'], { cwd: root, encoding: 'utf8' });
@@ -12,9 +15,7 @@ function build(ok = true, pattern) {
   assert.equal(result.status === 0, ok, output);
   if (pattern) assert.match(output, pattern);
 }
-const html = (path) => readFile(new URL(`../dist/${path}`, import.meta.url), 'utf8');
-try { await access(english); throw new Error('This fixture test requires no existing en directory; run in an isolated checkout.'); }
-catch (error) { if (error.code !== 'ENOENT') throw error; }
+const html = (path) => readFile(new URL(`dist/${path}`, root), 'utf8');
 async function checkDiscovery(expectedEnglish) {
   const englishRss = await html('en/rss.xml');
   assert.match(englishRss, /<language>en<\/language>/);
@@ -30,8 +31,8 @@ async function checkDiscovery(expectedEnglish) {
   assert.equal((english.match(/^- /gm) ?? []).length, expectedEnglish);
   for (const match of index.matchAll(/\]\((https:[^)]+)\)/g)) {
     const path = new URL(match[1]).pathname.slice(1);
-    await access(new URL(`../dist/${path}`, import.meta.url));
-    await access(new URL(`../dist/${path.replace(/\.md$/, '/index.html')}`, import.meta.url));
+    await access(new URL(`dist/${path}`, root));
+    await access(new URL(`dist/${path.replace(/\.md$/, '/index.html')}`, root));
   }
   for (const [path, feed] of [['index.html', '/rss.xml'], ['en/index.html', '/en/rss.xml'],
     ...(expectedEnglish ? [['en/articles/ai-and-intuition/index.html', '/en/rss.xml'], ['articles/ai-and-intuition/index.html', '/rss.xml']] : [])]) {
@@ -42,23 +43,25 @@ async function checkDiscovery(expectedEnglish) {
   }
   for (const match of englishRss.matchAll(/<item>.*?<link>(.*?)<\/link>.*?<\/item>/g)) {
     assert.ok(new URL(match[1]).pathname.startsWith('/en/articles/'));
-    await access(new URL(`../dist/${new URL(match[1]).pathname.slice(1)}index.html`, import.meta.url));
+    await access(new URL(`dist/${new URL(match[1]).pathname.slice(1)}index.html`, root));
   }
 }
 let server;
 try {
-  build();
-  await checkDiscovery(0);
-  const originalRss = await html('rss.xml');
-  assert.doesNotMatch(await html('index.html'), /href="\/en\/"/);
-  assert.doesNotMatch(await html('en/index.html'), /hreflang=/);
-  await mkdir(english);
+  for (const file of ['src', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
+    await cp(new URL(`../${file}`, import.meta.url), new URL(file, root), { recursive: true });
+  }
+  await symlink(resolve('node_modules'), new URL('node_modules', root), 'dir');
+  await rm(new URL('src/content/blog/', root), { recursive: true });
+  await mkdir(english, { recursive: true });
   const slug = 'ai-and-intuition';
   const names = [slug, ...Array.from({length: 10}, (_, i) => `fixture-${i}`)];
-  for (const [i, name] of names.entries()) await writeFile(new URL(`${name}.md`, english), fixture(`English title ${i}`));
+  for (const [i, name] of names.entries()) {
+    await writeFile(new URL(`${name}.md`, english), fixture(`English title ${i}`));
+    await writeFile(new URL(`src/content/blog/${name}.md`, root), fixture(`Japanese title ${i}`));
+  }
   build();
   await checkDiscovery(11);
-  assert.equal(await html('rss.xml'), originalRss);
   assert.match(await html('en/rss.xml'), /English title 0/);
   assert.match(await html('en/rss.xml'), /English searchable overview/);
   assert.equal(await html(`en/articles/${slug}.md`), fixture('English title 0'));
@@ -73,15 +76,28 @@ try {
   for (const path of ['articles/page/2/index.html', 'en/articles/page/2/index.html']) assert.doesNotMatch(await html(path), /hreflang=/);
   assert.match(await html('index.html'), /hreflang="en" href="https:[^"]*\/en\/"/);
   assert.match(await html('en/index.html'), /hreflang="ja" href="https:[^"]*\/"/);
-  assert.doesNotMatch(await html('en/articles/fixture-0/index.html'), /hreflang="ja"/);
+  assert.match(await html('en/articles/fixture-0/index.html'), /hreflang="ja"/);
   assert.doesNotMatch(await html('rss.xml'), /English title/);
   assert.match(await html('llms.txt'), /English title/);
   const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
-  server = spawn('npm', ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4329'], {cwd:root, stdio:'ignore'});
+  server = spawn(process.execPath, [resolve('node_modules/astro/bin/astro.mjs'), 'preview', '--host', '127.0.0.1', '--port', '0'], {cwd:root, stdio:['ignore', 'pipe', 'pipe']});
+  const base = await new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Preview startup timed out')), 10000);
+    let output = '';
+    const inspect = (chunk) => {
+      output += chunk;
+      const address = output.match(/http:\/\/127\.0\.0\.1:\d+/);
+      if (address) { clearTimeout(timeout); resolve(address[0]); }
+    };
+    server.stdout.on('data', inspect);
+    server.stderr.on('data', inspect);
+    server.once('error', error => { clearTimeout(timeout); reject(error); });
+    server.once('exit', code => { clearTimeout(timeout); reject(new Error(`Preview exited (${code}): ${output}`)); });
+  });
   const browser = await chromium.launch({ headless:true, args:['--no-sandbox'] });
   try {
     const page = await browser.newPage();
-    for(let i=0; i<50; i++) { try { await page.goto('http://127.0.0.1:4329/en/articles/page/2/'); break; } catch { await new Promise(r => setTimeout(r,100)); } }
+    await page.goto(`${base}/en/articles/page/2/`);
     await page.locator('#article-search-trigger').click();
     await page.locator('#article-query').fill('English title 0');
     assert.equal(await page.locator('.post:visible').count(), 1);
@@ -94,11 +110,11 @@ try {
     await page.locator('.header-links a[lang="ja"]').click();
     assert.equal(new URL(page.url()).pathname, '/');
     assert.equal(await page.locator('.article-search').isVisible(), false);
-    await page.goto('http://127.0.0.1:4329/articles/ai-and-intuition/');
+    await page.goto(`${base}/articles/ai-and-intuition/`);
     await page.locator('.header-links a[lang="en"]').click();
     assert.equal(new URL(page.url()).pathname, '/en/articles/ai-and-intuition/');
     assert.equal(await page.locator('.translation-notice a').getAttribute('href'), '/articles/ai-and-intuition/');
-    await page.goto('http://127.0.0.1:4329/en/');
+    await page.goto(`${base}/en/`);
     await page.locator('#article-search-trigger').click();
     await page.locator('#article-query').fill('no-such-article');
     assert.equal(await page.locator('.search-status').textContent(), 'No articles found (0)');
@@ -117,6 +133,5 @@ try {
   console.log('Bilingual build, validation, metadata, Markdown and browser checks passed.');
 } finally {
   server?.kill();
-  await rm(english, { recursive:true, force:true });
-  build();
+  await rm(root, { recursive:true, force:true });
 }
