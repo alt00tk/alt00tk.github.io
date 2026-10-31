@@ -8,7 +8,7 @@ const { language, currentPage = 1 } = Astro.props;
 const all = await getCollection("blog");
 const articles = sortArticlesByPublishedAt(all.filter(a => articleLanguage(a) === language));
 const alternateLanguage = language === "en" ? "ja" : "en";
-const alternate = all.some(a => articleLanguage(a) === alternateLanguage) ? listUrl(alternateLanguage) : undefined;
+const alternate = listUrl(alternateLanguage);
 ---
 <BaseLayout title="notes" language={language} alternate={alternate} includeAlternates={currentPage === 1 && articles.length > 0} searchable>
   <main class="site-main"><ArticleList articles={articles} currentPage={currentPage} totalPages={getTotalPages(articles.length)} language={language} /></main>
