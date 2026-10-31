@@ -1,5 +1,6 @@
 import { parse, walkSync, ELEMENT_NODE } from "ultrahtml";
 import { unescape } from "html-escaper";
+import { articleUrl } from "../lib/blog";
 
 type Article = {
   id: string;
@@ -21,7 +22,7 @@ export function validatePublication(articles: Article[], site: URL): void {
     else if (article.data.publishedAt !== other.data.publishedAt) {
       fail(slug, `publishedAt mismatch (${article.data.publishedAt} / ${other.data.publishedAt})`);
     }
-    const base = new URL(`${language === "en" ? "/en" : ""}/articles/${slug}/`, site);
+    const base = new URL(articleUrl(article), site);
     walkSync(parse(article.rendered.html), (node) => {
       if (node.type !== ELEMENT_NODE || node.name !== "a" || !("href" in node.attributes)) return;
       const href = unescape(node.attributes.href);
@@ -38,14 +39,14 @@ export function validatePublication(articles: Article[], site: URL): void {
       if (relativeSource && (relativeSource[2] === ".md" || byId.has(`${language}/${relativeSource[1]}`))) {
         const siblingSlug = relativeSource[1];
         if (!byId.has(`${language}/${siblingSlug}`)) fail(href, "article target does not exist");
-        fail(href, `invalid article link format; use ${language === "en" ? "/en" : ""}/articles/${siblingSlug}/`);
+        fail(href, `invalid article link format; use ${articleUrl({ id: `${language}/${siblingSlug}` })}`);
         return;
       }
       const match = pathname.match(/^\/(en\/)?articles\/([^/]+?)(?:\/|\.md)?$/);
       if (!match) return;
       const targetLanguage = match[1] ? "en" : "ja";
       const targetSlug = match[2];
-      const canonical = `${targetLanguage === "en" ? "/en" : ""}/articles/${targetSlug}/`;
+      const canonical = articleUrl({ id: `${targetLanguage}/${targetSlug}` });
       if (!byId.has(`${targetLanguage}/${targetSlug}`)) fail(href, "article target does not exist");
       if (targetLanguage !== language) fail(href, "article language mismatch");
       if (href.split(/[?#]/, 1)[0] !== canonical) fail(href, `invalid article link format; use ${canonical}`);
