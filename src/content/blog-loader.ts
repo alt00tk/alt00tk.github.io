@@ -3,6 +3,8 @@ import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Loader } from "astro/loaders";
 
+import { validatePublication } from "./publication-contract";
+
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function projectRelativePath(root: URL, filePath: string): string {
@@ -55,15 +57,17 @@ export const blogLoader = {
           );
         }
 
-        const existingPath = slugs.get(slug);
+        const language = relative(contentDirectory, filePath).split(sep)[0] === "en" ? "en" : "ja";
+        const id = `${language}/${slug}`;
+        const existingPath = slugs.get(id);
         if (existingPath) {
           throw new Error(
             `Duplicate blog article slug "${slug}": "${existingPath}" and "${articlePath}" both resolve to the same article ID.`,
           );
         }
-        slugs.set(slug, articlePath);
+        slugs.set(id, articlePath);
 
-        return { filePath, articlePath, slug };
+        return { filePath, articlePath, slug, language, id };
       });
 
       const entries = [];
@@ -83,13 +87,13 @@ export const blogLoader = {
         }
 
         const data = await parseData({
-          id: article.slug,
+          id: article.id,
           data: rendered.metadata?.frontmatter ?? {},
           filePath: article.filePath,
         });
 
         entries.push({
-          id: article.slug,
+          id: article.id,
           data,
           filePath: article.articlePath,
           body: contents,
@@ -97,6 +101,8 @@ export const blogLoader = {
           rendered,
         });
       }
+
+      validatePublication(entries, new URL(config.site!));
 
       store.clear();
       for (const entry of entries) store.set(entry);

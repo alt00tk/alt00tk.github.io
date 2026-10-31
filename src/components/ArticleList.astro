@@ -1,28 +1,29 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatPublishedAt, getArticlesForPage } from "../lib/blog";
+import { formatPublishedAt, getArticlesForPage, articleUrl, listUrl, type Language } from "../lib/blog";
 
 interface Props {
   articles: CollectionEntry<"blog">[];
+  language: Language;
   currentPage: number;
   totalPages: number;
 }
 
-const { articles, currentPage, totalPages } = Astro.props;
+const { articles, currentPage, totalPages, language } = Astro.props;
 const pageArticleIds = new Set(getArticlesForPage(articles, currentPage).map((article) => article.id));
 const hasPagination = totalPages > 1;
 const hasNewer = currentPage > 1;
 const hasOlder = currentPage < totalPages;
-const newerHref = currentPage === 2 ? "/" : `/articles/page/${currentPage - 1}/`;
-const olderHref = `/articles/page/${currentPage + 1}/`;
+const newerHref = listUrl(language, currentPage - 1);
+const olderHref = listUrl(language, currentPage + 1);
 ---
 
 <div class="article-list">
   <div class="article-search" id="article-search-panel" role="search" hidden>
-    <label for="article-query">記事を検索</label>
+    <label for="article-query">{language === "en" ? "Search articles" : "記事を検索"}</label>
     <div class="search-controls">
-      <input id="article-query" type="search" placeholder="タイトル・説明文を検索" aria-controls="article-posts" />
-      <button class="search-clear" type="button" aria-label="検索語をクリア" disabled>クリア</button>
+      <input id="article-query" type="search" placeholder={language === "en" ? "Search titles and descriptions" : "タイトル・説明文を検索"} aria-controls="article-posts" />
+      <button class="search-clear" type="button" aria-label={language === "en" ? "Clear search" : "検索語をクリア"} disabled>{language === "en" ? "Clear" : "クリア"}</button>
     </div>
     <p class="search-status" role="status" aria-atomic="true"></p>
   </div>
@@ -36,7 +37,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
         <article>
           <a
             class="post-link"
-            href={`/articles/${article.id}/`}
+            href={articleUrl(article)}
             aria-labelledby={`article-title-${article.id}`}
           >
             <h2 id={`article-title-${article.id}`}>{article.data.title}</h2>
@@ -48,7 +49,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
   </ul>
 
   {hasPagination && (
-    <nav aria-label="記事一覧ページ送り" class="pagination">
+    <nav aria-label={language === "en" ? "Article pagination" : "記事一覧ページ送り"} class="pagination">
       {hasNewer ? (
         <a href={newerHref}>← Newer</a>
       ) : (
@@ -67,6 +68,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
 <script>
   import { LIST_ORIGIN, saveListContext, takeListReturn } from "../lib/article-list-context";
 
+  const english = document.documentElement.lang === "en";
   const returning = takeListReturn();
   const list = document.querySelector<HTMLElement>(".article-list");
   const trigger = document.querySelector<HTMLButtonElement>("#article-search-trigger");
@@ -140,7 +142,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
       }
       if (pagination) pagination.hidden = open;
       clear.disabled = input.value.length === 0;
-      const message = query ? (count ? `検索結果: ${count}件` : "該当する記事はありません（0件）") : "";
+      const message = english ? (query ? (count ? `Results: ${count}` : "No articles found (0)") : "") : query ? (count ? `検索結果: ${count}件` : "該当する記事はありません（0件）") : "";
       if (status.textContent !== message) status.textContent = message;
     };
 
@@ -154,7 +156,7 @@ const olderHref = `/articles/page/${currentPage + 1}/`;
     const setOpen = (open: boolean, focus = true) => {
       search.hidden = !open;
       trigger.setAttribute("aria-expanded", String(open));
-      const label = open ? "記事検索を閉じる" : "記事検索を開く";
+      const label = english ? (open ? "Close article search" : "Open article search") : (open ? "記事検索を閉じる" : "記事検索を開く");
       trigger.setAttribute("aria-label", label);
       trigger.title = label;
       if (!open) input.value = "";

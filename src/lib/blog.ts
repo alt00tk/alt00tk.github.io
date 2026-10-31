@@ -61,3 +61,18 @@ export function formatPublishedAt(publishedAt: string): string {
 
   return `${year.padStart(4, "0")}.${month}.${day}`;
 }
+
+export type Language = "ja" | "en";
+export function articleLanguage(article: { id: string }): Language {
+  return article.id.startsWith("en/") ? "en" : "ja";
+}
+export function articleSlug(article: { id: string }): string {
+  return article.id.split("/").at(-1)!;
+}
+export function listUrl(language: Language, page = 1): string {
+  const prefix = language === "en" ? "/en" : "";
+  return page === 1 ? `${prefix}/` : `${prefix}/articles/page/${page}/`;
+}
+export function articleUrl(article: { id: string }): string {
+  return `${articleLanguage(article) === "en" ? "/en" : ""}/articles/${articleSlug(article)}/`;
+}

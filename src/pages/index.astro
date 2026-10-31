@@ -1,19 +1,4 @@
 ---
-import { getCollection } from "astro:content";
-import ArticleList from "../components/ArticleList.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getTotalPages, sortArticlesByPublishedAt } from "../lib/blog";
-
-const articles = sortArticlesByPublishedAt(await getCollection("blog"));
-const totalPages = getTotalPages(articles.length);
+import ListingPage from "../components/ListingPage.astro";
 ---
-
-<BaseLayout title="notes" searchable>
-  <main class="site-main">
-    <ArticleList
-      articles={articles}
-      currentPage={1}
-      totalPages={totalPages}
-    />
-  </main>
-</BaseLayout>
+<ListingPage language="ja" />

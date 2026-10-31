@@ -1,8 +1,9 @@
 ---
+const { language = "ja" } = Astro.props;
 const modes = [
-  { value: "system", label: "システム", path: "M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 17h8m-4-4v4" },
-  { value: "light", label: "ライト", path: "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" },
-  { value: "dark", label: "ダーク", path: "M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z" },
+  { value: "system", label: language === "en" ? "System" : "システム", path: "M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 17h8m-4-4v4" },
+  { value: "light", label: language === "en" ? "Light" : "ライト", path: "M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" },
+  { value: "dark", label: language === "en" ? "Dark" : "ダーク", path: "M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z" },
 ];
 ---
 
@@ -10,8 +11,8 @@ const modes = [
   <button
     class="theme-trigger"
     type="button"
-    aria-label="配色を選ぶ（現在: システム）"
-    title="配色を選ぶ"
+    aria-label={language === "en" ? "Choose color theme (current: System)" : "配色を選ぶ（現在: システム）"}
+    title={language === "en" ? "Choose color theme" : "配色を選ぶ"}
     aria-haspopup="menu"
     aria-expanded="false"
     aria-controls="theme-menu"
@@ -22,7 +23,7 @@ const modes = [
       </svg>
     ))}
   </button>
-  <div class="theme-menu" id="theme-menu" role="menu" aria-label="配色" hidden>
+  <div class="theme-menu" id="theme-menu" role="menu" aria-label={language === "en" ? "Color theme" : "配色"} hidden>
     {modes.map((mode) => (
       <button class="theme-option" type="button" role="menuitemradio" aria-checked={mode.value === "system" ? "true" : "false"} data-theme-mode={mode.value} tabindex={mode.value === "system" ? 0 : -1}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -55,7 +56,7 @@ const modes = [
         icon.toggleAttribute("hidden", icon.dataset.themeIcon !== mode);
       }
       const label = options.find((option) => option.dataset.themeMode === mode)?.textContent?.trim();
-      trigger!.setAttribute("aria-label", `配色を選ぶ（現在: ${label}）`);
+      trigger!.setAttribute("aria-label", document.documentElement.lang === "en" ? `Choose color theme (current: ${label})` : `配色を選ぶ（現在: ${label}）`);
     }
 
     function closeMenu(restoreFocus = false) {

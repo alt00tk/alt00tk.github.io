@@ -1,0 +1,10 @@
+---
+import { getCollection } from "astro:content";
+import ListingPage from "../../../../components/ListingPage.astro";
+import { articleLanguage, getTotalPages } from "../../../../lib/blog";
+export async function getStaticPaths() {
+ const articles = (await getCollection("blog")).filter(a => articleLanguage(a) === "en");
+ return Array.from({length: Math.max(0, getTotalPages(articles.length)-1)}, (_, i) => ({params: {page: String(i+2)}, props: {currentPage: i+2}}));
+}
+---
+<ListingPage language="en" currentPage={Astro.props.currentPage} />
