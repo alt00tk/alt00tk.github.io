@@ -3,6 +3,8 @@ import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Loader } from "astro/loaders";
 
+import { validatePublication } from "./publication-contract";
+
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function projectRelativePath(root: URL, filePath: string): string {
@@ -99,6 +101,8 @@ export const blogLoader = {
           rendered,
         });
       }
+
+      validatePublication(entries, new URL(config.site!));
 
       store.clear();
       for (const entry of entries) store.set(entry);
