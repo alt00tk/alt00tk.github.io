@@ -1,6 +1,6 @@
 ---
 id: BLOG-026
-status: active
+status: closed
 type: enhancement
 depends_on: [BLOG-024, BLOG-025]
 ---
@@ -51,4 +51,4 @@ test-bilingual.mjsは英語原稿があると停止し、英語原稿を除い�
 - 変更: 日英ペア前提の隔離回帰fixture、専用プレビュー、対応版探索・欠落表示分岐の削除、回帰確認手順の追記。
 - 検証: npm run build成功（26ページ）。node scripts/test-publication-contract.mjs 全19ケース成功。PLAYWRIGHT_MODULE=/home/tome/likedPicsViewer/node_modules/playwright/index.mjs node scripts/test-bilingual.mjs成功（ビルド、検索・0件・クリア、切替・原文リンク、一覧復帰・言語状態分離、RSS、llms.txt、Markdown、メタ情報、loader異常系）。子プロセス・Chromiumの実行はsandbox外で実施。git diff --checkとIssue一覧検証成功。
 - レビュー観点: 日英同時公開の保証と表示責務、既存原稿・distの保護、ブラウザが検証対象プレビューへ接続すること。独立レビュー完了、未解決指摘なし。
-- 統合状態: コミットまで承認済み。developへのマージ承認待ちのためactiveに留める。
+- 統合状態: ユーザーの明示承認を受け、closedの記録を含めてdevelopへ --no-ff で統合する。mainへの統合・push・本番配備は対象外。
