@@ -364,18 +364,16 @@ button:focus-visible {
   opacity: 0.35;
 }
 
+.site-main--translated {
+  padding-top: 24px;
+}
+
 .translation-notice {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   padding: 16px 20px;
   background: color-mix(in srgb, var(--text) 5%, var(--bg));
   font-size: 1rem;
   line-height: 1.8;
-}
-
-.translation-notice h2 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  font-weight: 700;
 }
 
 .translation-notice p {
@@ -537,6 +535,10 @@ button:focus-visible {
   .site-main {
     padding-top: 36px;
     padding-bottom: 64px;
+  }
+
+  .site-main--translated {
+    padding-top: 18px;
   }
 
   .posts {

@@ -17,10 +17,9 @@ const { Content } = await render(article);
   alternate={alternate}
   publishedAt={article.data.publishedAt}
 >
-  <main class="site-main">
+  <main class:list={["site-main", { "site-main--translated": language === "en" }]}>
     {language === "en" && (
-      <aside class="translation-notice" aria-labelledby="translation-notice-title">
-        <h2 id="translation-notice-title">Translation note</h2>
+      <aside class="translation-notice" aria-label="Translation note">
         <p>This article was translated from Japanese using AI and may contain translation errors. Please refer to {counterpart ? <a href={alternate}>the original Japanese version</a> : "the original Japanese version"} for the author's intended meaning.</p>
       </aside>
     )}
