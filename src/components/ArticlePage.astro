@@ -18,6 +18,12 @@ const { Content } = await render(article);
   publishedAt={article.data.publishedAt}
 >
   <main class="site-main">
+    {language === "en" && (
+      <aside class="translation-notice" aria-labelledby="translation-notice-title">
+        <h2 id="translation-notice-title">Translation note</h2>
+        <p>This article was translated from Japanese using AI and may contain translation errors. Please refer to {counterpart ? <a href={alternate}>the original Japanese version</a> : "the original Japanese version"} for the author's intended meaning.</p>
+      </aside>
+    )}
     <article class="article">
       <header class="article-header">
         <time datetime={article.data.publishedAt}>
@@ -26,7 +32,6 @@ const { Content } = await render(article);
         <h1>{article.data.title}</h1>
         <p class="article-lead">{article.data.description}</p>
       </header>
-      {language === "en" && <p class="translation-notice">This article was translated from Japanese using AI and may contain translation errors. Please refer to {counterpart ? <a href={alternate}>the original Japanese version</a> : "the original Japanese version"} for the author's intended meaning.</p>}
       <div class="article-content">
         <Content />
       </div>
