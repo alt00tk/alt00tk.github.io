@@ -48,12 +48,12 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
     <link rel="canonical" href={canonicalUrl} />
     {includeAlternates && <link rel="alternate" hreflang={language === "en" ? "ja" : "en"} href={new URL(alternate, Astro.site)} />}
     {includeAlternates && <link rel="alternate" hreflang={language} href={canonicalUrl} />}
-    <link rel="alternate" type="application/rss+xml" title="notes RSS" href={new URL(language === "en" ? "/en/rss.xml" : "/rss.xml", Astro.site)} />
+    <link rel="alternate" type="application/rss+xml" title="alt00tk's notes RSS" href={new URL(language === "en" ? "/en/rss.xml" : "/rss.xml", Astro.site)} />
     <meta property="og:title" content={title} />
     <meta property="og:type" content={publishedAt ? "article" : "website"} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="notes" />
+    <meta property="og:site_name" content="alt00tk's notes" />
     <meta property="og:locale" content={language === "en" ? "en_US" : "ja_JP"} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:type" content="image/png" />
@@ -71,7 +71,7 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
   <body>
     <div class="site">
       <header class="site-header">
-        <a class="brand" href={listUrl(language)}>notes</a>
+        <a class="brand" href={listUrl(language)}>alt00tk's notes</a>
         <div class="header-links">
           {searchable && (
             <button class="search-trigger" id="article-search-trigger" type="button" aria-label={language === "en" ? "Open article search" : "記事検索を開く"} title={language === "en" ? "Open article search" : "記事検索を開く"} aria-expanded="false" aria-controls="article-search-panel" hidden>
@@ -127,7 +127,7 @@ const imageAlt = language === "en" ? "The word notes in rounded lettering on a l
         </div>
       </header>
       <slot />
-      <footer class="site-footer">© 2026 notes</footer>
+      <footer class="site-footer">© 2026 alt00tk's notes</footer>
     </div>
   </body>
 </html>

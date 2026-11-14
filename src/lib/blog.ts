@@ -1,4 +1,4 @@
-const ARTICLES_PER_PAGE = 10;
+const ARTICLES_PER_PAGE = 8;
 
 export function getTotalPages(articleCount: number): number {
   return Math.ceil(articleCount / ARTICLES_PER_PAGE);

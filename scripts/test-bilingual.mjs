@@ -37,7 +37,7 @@ async function checkDiscovery(expectedEnglish) {
   for (const [path, feed] of [['index.html', '/rss.xml'], ['en/index.html', '/en/rss.xml'],
     ...(expectedEnglish ? [['en/articles/ai-and-intuition/index.html', '/en/rss.xml'], ['articles/ai-and-intuition/index.html', '/rss.xml']] : [])]) {
     const page = await html(path);
-    assert.match(page, new RegExp(`rel="alternate" type="application/rss\\+xml" title="notes RSS" href="https:[^"]*${feed}"`));
+    assert.match(page, new RegExp(`rel="alternate" type="application/rss\\+xml" title="alt00tk's notes RSS" href="https:[^"]*${feed}"`));
     assert.ok(page.includes(`href="${feed}"`));
     assert.ok(page.includes('href="/llms.txt"'));
   }

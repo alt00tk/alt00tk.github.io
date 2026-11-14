@@ -15,7 +15,7 @@ export const GET: APIRoute = async ({ site }) => {
       return `- [${markdownText(article.data.title)}](${sourceUrl}): ${markdownText(article.data.description)}`;
     });
   const contents = [
-    "# notes",
+    "# alt00tk's notes",
     "",
     "> 技術・設計・AIについて考えたことと、判断の記録。",
     "",
