@@ -1,6 +1,6 @@
 ---
 id: BLOG-027
-status: active
+status: closed
 type: enhancement
 depends_on: []
 ---
@@ -43,4 +43,4 @@ alt00tk's notes は所有格として自然な英語表記。OGP画像の代替�
 
 - 変更: サイト名を alt00tk's notes に統一し、共通ページ分割を10件から8件へ変更した。既存RSS検証の期待値も更新した。
 - 検証: npm run build、git diff --check成功。生成HTMLの解析で日英とも8件・6件の2ページとなり、記事の欠落・重複がないことを確認。全HTMLの文書タイトル、日英RSSタイトル、llms.txt見出しを確認した。
-- レビュー観点: 日英の表示名と共通ページ分割。mainへのマージ承諾待ち。
+- レビュー観点: 日英の表示名と共通ページ分割。mainへのマージ・pushはユーザー承諾済み。
