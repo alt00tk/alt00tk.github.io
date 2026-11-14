@@ -8,7 +8,7 @@ export async function blogRss(language: Language, site: URL | undefined) {
   }
   const articles = sortArticlesByPublishedAt((await getCollection("blog")).filter(a => articleLanguage(a) === language));
   return rss({
-    title: "notes",
+    title: "alt00tk's notes",
     description: language === "en"
       ? "Thoughts on technology, design, and AI, and records of decisions."
       : "技術・設計・AIについて考えたことと、判断の記録。",
