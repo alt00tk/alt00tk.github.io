@@ -476,6 +476,34 @@ button:focus-visible {
   color: var(--muted);
 }
 
+.article-content table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1em 0 1.75em;
+  border-collapse: collapse;
+  line-height: 1.7;
+}
+
+.article-content :is(th, td) {
+  padding: 0.65em 1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 45%, var(--bg));
+  vertical-align: top;
+}
+
+.article-content th {
+  text-align: start;
+  font-weight: 700;
+  border-bottom-color: var(--line);
+  background: color-mix(in srgb, var(--text) 5%, var(--bg));
+}
+
+.article-content table:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
 .article-content a,
 .translation-notice a {
   color: var(--accent);
