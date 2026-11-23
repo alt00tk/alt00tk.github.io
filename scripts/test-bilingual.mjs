@@ -8,7 +8,13 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 const root = pathToFileURL((await mkdtemp(join(tmpdir(), 'bilingual-'))) + '/');
 const english = new URL('src/content/blog/en/', root);
-const fixture = (title) => `---\ntitle: ${title}\ndescription: English searchable overview\npublishedAt: "2026-01-01T00:00:00Z"\n---\nFixture body.\n`;
+const publishedAt = '2026-01-01T00:00:00Z';
+const revisedPublishedAt = '2025-12-31T00:00:00Z';
+const updatedAt = '2026-01-01T16:00:00Z';
+const fixture = (title, revised = false) => {
+  const update = revised ? `updatedAt: "${updatedAt}"\n` : '';
+  return `---\ntitle: ${title}\ndescription: English searchable overview\npublishedAt: "${revised ? revisedPublishedAt : publishedAt}"\n${update}---\nFixture body.\n`;
+};
 function build(ok = true, pattern) {
   const result = spawnSync('npm', ['run', 'build'], { cwd: root, encoding: 'utf8' });
   const output = result.stdout + result.stderr;
@@ -57,14 +63,31 @@ try {
   const slug = 'ai-and-intuition';
   const names = [slug, ...Array.from({length: 10}, (_, i) => `fixture-${i}`)];
   for (const [i, name] of names.entries()) {
-    await writeFile(new URL(`${name}.md`, english), fixture(`English title ${i}`));
-    await writeFile(new URL(`src/content/blog/${name}.md`, root), fixture(`Japanese title ${i}`));
+    await writeFile(new URL(`${name}.md`, english), fixture(`English title ${i}`, name === 'fixture-9'));
+    await writeFile(new URL(`src/content/blog/${name}.md`, root), fixture(`Japanese title ${i}`, name === 'fixture-9'));
   }
   build();
   await checkDiscovery(11);
   assert.match(await html('en/rss.xml'), /English title 0/);
   assert.match(await html('en/rss.xml'), /English searchable overview/);
   assert.equal(await html(`en/articles/${slug}.md`), fixture('English title 0'));
+  for (const [prefix, language] of [['', 'Japanese'], ['en/', 'English']]) {
+    const revised = await html(`${prefix}articles/fixture-9/index.html`);
+    assert.match(revised, new RegExp(`<time datetime="${revisedPublishedAt}">\\s*2025\\.12\\.31\\s*</time>`));
+    const original = await html(`${prefix}articles/${slug}/index.html`);
+    assert.equal((original.match(/<time\b/g) ?? []).length, 1);
+    assert.equal(await html(`${prefix}articles/fixture-9.md`), fixture(`${language} title 10`, true));
+
+    const revisedLink = `/${prefix}articles/fixture-9/`;
+    const revisedRow = (page) => page.match(/<li class="post"[^>]*>[\s\S]*?<\/li>/g)
+      .find(row => row.includes(`href="${revisedLink}"`));
+    assert.match(revisedRow(await html(`${prefix}index.html`)), /^<li class="post" hidden>/);
+    assert.match(revisedRow(await html(`${prefix}articles/page/2/index.html`)), /^<li class="post">/);
+    const rssItems = (await html(`${prefix}rss.xml`)).match(/<item>[\s\S]*?<\/item>/g);
+    const lastItem = rssItems.at(-1);
+    assert.ok(lastItem.includes(`<link>https://alt00tk.github.io${revisedLink}</link>`));
+    assert.ok(lastItem.includes(`<pubDate>${new Date(revisedPublishedAt).toUTCString()}</pubDate>`));
+  }
   const article = await html(`en/articles/${slug}/index.html`);
   assert.match(article, /lang="en"/);
   assert.match(article, /content="en_US"/);
@@ -106,7 +129,7 @@ try {
     assert.match(page.url(), /\/en\/articles\/ai-and-intuition\/$/);
     await page.locator('.article-nav a').click();
     assert.match(page.url(), /\/en\/articles\/page\/2\/$/);
-    assert.equal(await page.locator('#article-query').inputValue(), 'English title 0');
+    await page.waitForFunction(() => document.querySelector('#article-query')?.value === 'English title 0');
     await page.locator('.header-links a[lang="ja"]').click();
     assert.equal(new URL(page.url()).pathname, '/');
     assert.equal(await page.locator('.article-search').isVisible(), false);
@@ -120,6 +143,26 @@ try {
     assert.equal(await page.locator('.search-status').textContent(), 'No articles found (0)');
     await page.locator('.search-clear').click();
     assert.equal(await page.locator('.post:visible').count(), 11);
+    for (const width of [1280, 375, 250]) {
+      await page.setViewportSize({ width, height: 800 });
+      for (const [prefix, label] of [['', '更新日'], ['en/', 'Updated']]) {
+        await page.goto(`${base}/${prefix}articles/fixture-9/`);
+        const publication = page.locator(`time[datetime="${revisedPublishedAt}"]`);
+        const revision = page.locator(`time[datetime="${updatedAt}"]`);
+        const first = await publication.boundingBox();
+        const second = await revision.boundingBox();
+        if (width === 250) {
+          assert.ok(second.y >= first.y + first.height && Math.abs(first.x - second.x) < 2,
+            `${prefix || 'ja/'} at ${width}px: update should wrap below the publication date`);
+          assert.ok(second.x + second.width <= width);
+        } else {
+          assert.ok(second.x >= first.x + first.width && Math.abs(first.y - second.y) < 2,
+            `${prefix || 'ja/'} at ${width}px: update should sit next to the publication date`);
+        }
+        assert.equal((await revision.innerText()).trim(), `${label} 2026.01.02`);
+        assert.equal(await revision.locator('svg[aria-hidden="true"]').isVisible(), true);
+      }
+    }
   } finally { await browser.close(); }
   await mkdir(new URL('nested/', english));
   await writeFile(new URL(`nested/${slug}.md`, english), fixture('Duplicate'));

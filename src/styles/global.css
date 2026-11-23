@@ -390,9 +390,22 @@ button:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
-.article-header time {
-  display: block;
+.article-dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
   margin-bottom: 14px;
+}
+
+.article-updated {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.article-updated svg {
+  flex: none;
 }
 
 .article-header h1 {
@@ -581,6 +594,10 @@ button:focus-visible {
   .article-header {
     margin-bottom: 42px;
     padding-bottom: 30px;
+  }
+
+  .article-dates:has(.article-updated) time {
+    font-size: 1rem;
   }
 
   .article-header h1 {

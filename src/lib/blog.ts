@@ -9,16 +9,21 @@ export function getArticlesForPage<T>(articles: readonly T[], page: number): T[]
   return articles.slice(start, start + ARTICLES_PER_PAGE);
 }
 
-function subMillisecondFraction(publishedAt: string): string {
-  const fractionalSeconds = publishedAt.match(/\.(\d+)(?=(?:Z|[+-]\d{2}:?\d{2})$)/)?.[1] ?? "";
+function parseArticleDate(date: string): Date {
+  // Truncate before parsing because Date can misread long fractional seconds.
+  return new Date(date.replace(/(\.\d{3})\d+/, "$1"));
+}
+
+function subMillisecondFraction(date: string): string {
+  const fractionalSeconds = date.match(/\.(\d+)(?=(?:Z|[+-]\d{2}:?\d{2})$)/)?.[1] ?? "";
   return fractionalSeconds.slice(3).replace(/0+$/, "");
 }
 
-function comparePublishedAtDescending(left: string, right: string): number {
-  const leftMilliseconds = Date.parse(left);
-  const rightMilliseconds = Date.parse(right);
+export function compareArticleDates(left: string, right: string): number {
+  const leftMilliseconds = parseArticleDate(left).getTime();
+  const rightMilliseconds = parseArticleDate(right).getTime();
   if (leftMilliseconds !== rightMilliseconds) {
-    return rightMilliseconds - leftMilliseconds;
+    return leftMilliseconds - rightMilliseconds;
   }
 
   // Date parses only millisecond precision; preserve any remaining validated ISO fraction.
@@ -32,31 +37,31 @@ function comparePublishedAtDescending(left: string, right: string): number {
     return 0;
   }
 
-  return leftRemainder > rightRemainder ? -1 : 1;
+  return leftRemainder > rightRemainder ? 1 : -1;
 }
 
 export function sortArticlesByPublishedAt<T extends { data: { publishedAt: string } }>(
   articles: readonly T[],
 ): T[] {
   return [...articles].sort((left, right) =>
-    comparePublishedAtDescending(left.data.publishedAt, right.data.publishedAt),
+    compareArticleDates(right.data.publishedAt, left.data.publishedAt),
   );
 }
 
-export function formatPublishedAt(publishedAt: string): string {
+export function formatArticleDate(date: string): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Tokyo",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).formatToParts(new Date(publishedAt));
+  }).formatToParts(parseArticleDate(date));
   const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value;
   const year = part("year");
   const month = part("month");
   const day = part("day");
 
   if (!year || !month || !day) {
-    throw new Error(`Unable to format publishedAt "${publishedAt}" in Asia/Tokyo.`);
+    throw new Error(`Unable to format article date "${date}" in Asia/Tokyo.`);
   }
 
   return `${year.padStart(4, "0")}.${month}.${day}`;

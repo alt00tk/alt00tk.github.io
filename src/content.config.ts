@@ -15,6 +15,10 @@ const blog = defineCollection({
       error: "publishedAt must be an ISO 8601 datetime with an explicit timezone.",
       offset: true,
     }),
+    updatedAt: z.iso.datetime({
+      error: "updatedAt must be an ISO 8601 datetime with an explicit timezone.",
+      offset: true,
+    }).optional(),
   }),
 });
 

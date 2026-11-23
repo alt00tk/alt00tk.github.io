@@ -1,10 +1,11 @@
 ---
 import { render } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatPublishedAt, articleLanguage, articleSlug, articleUrl, listUrl } from "../lib/blog";
+import { formatArticleDate, articleLanguage, articleSlug, articleUrl, listUrl } from "../lib/blog";
 
 const { article } = Astro.props;
 const language = articleLanguage(article);
+const { publishedAt, updatedAt } = article.data;
 const alternate = articleUrl({ id: `${language === "en" ? "ja" : "en"}/${articleSlug(article)}` });
 const { Content } = await render(article);
 ---
@@ -14,7 +15,7 @@ const { Content } = await render(article);
   description={article.data.description}
   language={language}
   alternate={alternate}
-  publishedAt={article.data.publishedAt}
+  publishedAt={publishedAt}
 >
   <main class:list={["site-main", { "site-main--translated": language === "en" }]}>
     {language === "en" && (
@@ -24,9 +25,19 @@ const { Content } = await render(article);
     )}
     <article class="article">
       <header class="article-header">
-        <time datetime={article.data.publishedAt}>
-          {formatPublishedAt(article.data.publishedAt)}
-        </time>
+        <div class="article-dates">
+          <time datetime={publishedAt}>
+            {formatArticleDate(publishedAt)}
+          </time>
+          {updatedAt && (
+            <time class="article-updated" datetime={updatedAt}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M20 5v5h-5M20 10a8 8 0 1 0 .5 5" />
+              </svg>
+              {language === "ja" ? "更新日" : "Updated"} {formatArticleDate(updatedAt)}
+            </time>
+          )}
+        </div>
         <h1>{article.data.title}</h1>
         <p class="article-lead">{article.data.description}</p>
       </header>
