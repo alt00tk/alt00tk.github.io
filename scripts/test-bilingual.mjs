@@ -71,10 +71,9 @@ try {
   assert.match(await html('en/rss.xml'), /English title 0/);
   assert.match(await html('en/rss.xml'), /English searchable overview/);
   assert.equal(await html(`en/articles/${slug}.md`), fixture('English title 0'));
-  for (const [prefix, language, label] of [['', 'Japanese', '更新日'], ['en/', 'English', 'Updated']]) {
+  for (const [prefix, language] of [['', 'Japanese'], ['en/', 'English']]) {
     const revised = await html(`${prefix}articles/fixture-9/index.html`);
     assert.match(revised, new RegExp(`<time datetime="${revisedPublishedAt}">\\s*2025\\.12\\.31\\s*</time>`));
-    assert.match(revised, new RegExp(`<time datetime="${updatedAt}">\\s*${label}\\s+2026\\.01\\.02\\s*</time>`));
     const original = await html(`${prefix}articles/${slug}/index.html`);
     assert.equal((original.match(/<time\b/g) ?? []).length, 1);
     assert.equal(await html(`${prefix}articles/fixture-9.md`), fixture(`${language} title 10`, true));
@@ -144,6 +143,26 @@ try {
     assert.equal(await page.locator('.search-status').textContent(), 'No articles found (0)');
     await page.locator('.search-clear').click();
     assert.equal(await page.locator('.post:visible').count(), 11);
+    for (const width of [1280, 375, 250]) {
+      await page.setViewportSize({ width, height: 800 });
+      for (const [prefix, label] of [['', '更新日'], ['en/', 'Updated']]) {
+        await page.goto(`${base}/${prefix}articles/fixture-9/`);
+        const publication = page.locator(`time[datetime="${revisedPublishedAt}"]`);
+        const revision = page.locator(`time[datetime="${updatedAt}"]`);
+        const first = await publication.boundingBox();
+        const second = await revision.boundingBox();
+        if (width === 250) {
+          assert.ok(second.y >= first.y + first.height && Math.abs(first.x - second.x) < 2,
+            `${prefix || 'ja/'} at ${width}px: update should wrap below the publication date`);
+          assert.ok(second.x + second.width <= width);
+        } else {
+          assert.ok(second.x >= first.x + first.width && Math.abs(first.y - second.y) < 2,
+            `${prefix || 'ja/'} at ${width}px: update should sit next to the publication date`);
+        }
+        assert.equal((await revision.innerText()).trim(), `${label} 2026.01.02`);
+        assert.equal(await revision.locator('svg[aria-hidden="true"]').isVisible(), true);
+      }
+    }
   } finally { await browser.close(); }
   await mkdir(new URL('nested/', english));
   await writeFile(new URL(`nested/${slug}.md`, english), fixture('Duplicate'));

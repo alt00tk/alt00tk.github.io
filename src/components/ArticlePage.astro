@@ -25,14 +25,19 @@ const { Content } = await render(article);
     )}
     <article class="article">
       <header class="article-header">
-        <time datetime={publishedAt}>
-          {formatArticleDate(publishedAt)}
-        </time>
-        {updatedAt && (
-          <time datetime={updatedAt}>
-            {language === "ja" ? "更新日" : "Updated"} {formatArticleDate(updatedAt)}
+        <div class="article-dates">
+          <time datetime={publishedAt}>
+            {formatArticleDate(publishedAt)}
           </time>
-        )}
+          {updatedAt && (
+            <time class="article-updated" datetime={updatedAt}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M20 5v5h-5M20 10a8 8 0 1 0 .5 5" />
+              </svg>
+              {language === "ja" ? "更新日" : "Updated"} {formatArticleDate(updatedAt)}
+            </time>
+          )}
+        </div>
         <h1>{article.data.title}</h1>
         <p class="article-lead">{article.data.description}</p>
       </header>
