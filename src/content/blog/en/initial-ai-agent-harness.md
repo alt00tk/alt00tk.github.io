@@ -2,6 +2,7 @@
 title: "What Should Go into an AI Agent's Initial Harness?"
 description: "How much of an AI agent's harness should be defined upfront? I consider which rules a new project needs at the outset."
 publishedAt: "2026-09-28T21:34:00+09:00"
+updatedAt: "2026-11-23T18:49:44+09:00"
 ---
 
 For AI coding agents, it seems best to build up a harness by gradually adding judgment criteria based on actual failures and reviews.
