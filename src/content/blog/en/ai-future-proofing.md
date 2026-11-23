@@ -2,6 +2,7 @@
 title: "How Much Code Should AI Write for Future Needs?"
 description: "AI can create abstractions and extension points in anticipation of future changes, but are they really needed now? I consider how to distinguish preparation for the future from design that is needed today."
 publishedAt: "2026-10-05T20:57:00+09:00"
+updatedAt: "2026-11-23T19:37:32+09:00"
 ---
 
 When I let an AI agent handle implementation, it sometimes gets too far ahead of current needs—for example, abstracting database operations because "we might replace the DBMS in the future."
