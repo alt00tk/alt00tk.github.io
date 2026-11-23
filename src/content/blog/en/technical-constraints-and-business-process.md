@@ -2,6 +2,7 @@
 title: "Is It Acceptable to Change Business Processes Because of Technical Constraints?"
 description: "When is it acceptable to change business processes because of technical constraints? I consider the relationship between technology and business processes, starting from business value."
 publishedAt: "2026-10-02T22:43:00+09:00"
+updatedAt: "2026-11-23T18:57:43+09:00"
 ---
 
 Even when we work out a business process from the business value we want to provide, technical constraints can make it unworkable as designed.
