@@ -2,6 +2,7 @@
 title: "Who Decides When Business Values Conflict?"
 description: "Even when business value guides decisions, different values can conflict. I consider who should take responsibility for conflicts that affect the overall direction while delegating decisions within individual areas."
 publishedAt: "2026-10-04T15:35:00+09:00"
+updatedAt: "2026-11-23T19:29:07+09:00"
 ---
 
 In the previous article, I framed both business processes and technology as means of delivering the business value we want to provide.
