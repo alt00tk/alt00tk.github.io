@@ -1,11 +1,11 @@
 import { parse, walkSync, ELEMENT_NODE } from "ultrahtml";
 import { unescape } from "html-escaper";
-import { articleUrl } from "../lib/blog";
+import { articleUrl, compareArticleDates } from "../lib/blog";
 
 type Article = {
   id: string;
   filePath: string;
-  data: { publishedAt: string };
+  data: { publishedAt: string; updatedAt?: string };
   rendered: { html: string };
 };
 
@@ -18,9 +18,18 @@ export function validatePublication(articles: Article[], site: URL): void {
     const [language, slug] = article.id.split("/");
     const other = byId.get(`${language === "ja" ? "en" : "ja"}/${slug}`);
     const fail = (target: string, reason: string) => errors.push(`${article.filePath}: ${target}: ${reason}`);
+    const { publishedAt, updatedAt } = article.data;
     if (!other) fail(slug, "missing language counterpart");
-    else if (article.data.publishedAt !== other.data.publishedAt) {
-      fail(slug, `publishedAt mismatch (${article.data.publishedAt} / ${other.data.publishedAt})`);
+    else {
+      if (publishedAt !== other.data.publishedAt) {
+        fail(slug, `publishedAt mismatch (${publishedAt} / ${other.data.publishedAt})`);
+      }
+      if (updatedAt !== other.data.updatedAt) {
+        fail(slug, `updatedAt mismatch (${updatedAt ?? "unset"} / ${other.data.updatedAt ?? "unset"})`);
+      }
+    }
+    if (updatedAt !== undefined && compareArticleDates(updatedAt, publishedAt) <= 0) {
+      fail(slug, `updatedAt must be later than publishedAt (${updatedAt} / ${publishedAt})`);
     }
     const base = new URL(articleUrl(article), site);
     walkSync(parse(article.rendered.html), (node) => {

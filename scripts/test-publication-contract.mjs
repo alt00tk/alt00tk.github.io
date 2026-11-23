@@ -5,7 +5,11 @@ import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 
 const root = await mkdtemp(join(tmpdir(), 'publication-contract-'));
-const article = (body = '', date = '2026-01-01T00:00:00Z') => `---\ntitle: Test\ndescription: Test\npublishedAt: "${date}"\n---\n${body}\n`;
+const article = (body = '', date = '2026-01-01T00:00:00Z', updatedAt) => {
+  const update = updatedAt === undefined ? '' : `updatedAt: "${updatedAt}"\n`;
+  return `---\ntitle: Test\ndescription: Test\npublishedAt: "${date}"\n${update}---\n${body}\n`;
+};
+const pairedUpdate = (date) => ({ 'ja/a': date, 'en/a': date });
 try {
   for (const file of ['src', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
     await cp(file, join(root, file), { recursive: true });
@@ -16,6 +20,13 @@ try {
     { name: 'missing English', error: 'missing language counterpart', missing: ['en/a'] },
     { name: 'missing Japanese', error: 'missing language counterpart', missing: ['ja/a'] },
     { name: 'date mismatch', error: 'publishedAt mismatch', dates: { 'en/a': '2026-01-02T00:00:00Z', 'en/b': '2026-01-02T00:00:00Z' } },
+    { name: 'matching update after publication', updates: pairedUpdate('2026-01-01T09:00:00.0001+09:00') },
+    { name: 'update missing in English', error: 'updatedAt mismatch', updates: { 'ja/a': '2026-01-02T00:00:00Z' } },
+    { name: 'update differs across languages', error: 'updatedAt mismatch', updates: { 'ja/a': '2026-01-02T00:00:00Z', 'en/a': '2026-01-02T09:00:00+09:00' } },
+    { name: 'update without timezone', error: 'updatedAt must be an ISO 8601 datetime with an explicit timezone', updates: pairedUpdate('2026-01-02T00:00:00') },
+    { name: 'update equals publication across offsets', error: 'updatedAt must be later than publishedAt', updates: pairedUpdate('2026-01-01T09:00:00+09:00') },
+    { name: 'update before publication', error: 'updatedAt must be later than publishedAt', dates: pairedUpdate('2026-01-01T00:00:00.0001Z'), updates: pairedUpdate('2026-01-01T00:00:00Z') },
+    { name: 'long fractional update before publication', error: 'updatedAt must be later than publishedAt', dates: pairedUpdate('2026-01-01T00:00:00.001Z'), updates: pairedUpdate('2026-01-01T00:00:00.00009999999Z') },
     { name: 'broken', bodies: { 'ja/a': '[x](/articles/missing/?a=1#h)' }, error: 'article target does not exist' },
     { name: 'wrong language', bodies: { 'ja/a': '[x](/en/articles/b/#h)' }, error: 'article language mismatch' },
     { name: 'reference broken', bodies: { 'ja/a': '[x][b]\n\n[b]: /articles/missing/' }, error: 'article target does not exist' },
@@ -32,13 +43,13 @@ try {
     { name: 'English valid', bodies: { 'en/a': '[x](/en/articles/b/?q=1#h)' } },
     { name: 'English wrong language', error: 'article language mismatch', bodies: { 'en/a': '[x](/articles/b/?q=1#h)' } },
   ];
-  for (const { name, bodies = {}, dates = {}, missing = [], error } of cases) {
+  for (const { name, bodies = {}, dates = {}, updates = {}, missing = [], error } of cases) {
     await rm(join(root, 'src/content/blog'), { recursive: true, force: true });
     await mkdir(join(root, 'src/content/blog/en'), { recursive: true });
     for (const lang of ['ja', 'en']) for (const slug of ['a', 'b']) {
       const id = `${lang}/${slug}`;
       if (missing.includes(id)) continue;
-      await writeFile(join(root, 'src/content/blog', lang === 'en' ? 'en' : '', `${slug}.md`), article(bodies[id], dates[id]));
+      await writeFile(join(root, 'src/content/blog', lang === 'en' ? 'en' : '', `${slug}.md`), article(bodies[id], dates[id], updates[id]));
     }
     const result = spawnSync(process.execPath, [resolve('node_modules/astro/bin/astro.mjs'), 'build'], { cwd: root, encoding: 'utf8' });
     const output = result.stdout + result.stderr;

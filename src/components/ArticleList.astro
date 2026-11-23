@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatPublishedAt, getArticlesForPage, articleUrl, listUrl, type Language } from "../lib/blog";
+import { formatArticleDate, getArticlesForPage, articleUrl, listUrl, type Language } from "../lib/blog";
 
 interface Props {
   articles: CollectionEntry<"blog">[];
@@ -32,7 +32,7 @@ const olderHref = listUrl(language, currentPage + 1);
     {articles.map((article) => (
       <li class="post" hidden={!pageArticleIds.has(article.id)}>
         <time datetime={article.data.publishedAt}>
-          {formatPublishedAt(article.data.publishedAt)}
+          {formatArticleDate(article.data.publishedAt)}
         </time>
         <article>
           <a
