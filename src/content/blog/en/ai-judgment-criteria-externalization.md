@@ -2,6 +2,7 @@
 title: "How Much Should We Externalize Judgment Criteria for AI?"
 description: "I want AI agents to make more consistent judgments, but too much instruction may constrain their reasoning and exploration. How much of our judgment criteria should we externalize?"
 publishedAt: "2026-09-27T22:10:00+09:00"
+updatedAt: "2026-11-23T18:30:44+09:00"
 ---
 
 When writing `AGENTS.md` files or skills for AI coding agents, it seems best to make judgment criteria as explicit as possible.
