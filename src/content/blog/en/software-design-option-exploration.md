@@ -2,6 +2,7 @@
 title: "How Broadly Should We Explore Design Options?"
 description: "Exploring a wide range of design options seems likely to yield better solutions, but real projects have deadlines and effort constraints. I consider how to explore and choose within limited resources."
 publishedAt: "2026-10-29T21:02:00+09:00"
+updatedAt: "2026-11-24T22:56:06+09:00"
 ---
 
 When considering a design, I often start with one straightforward option and compare two or three options that use different approaches.
