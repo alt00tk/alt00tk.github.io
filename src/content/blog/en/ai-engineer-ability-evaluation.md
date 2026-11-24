@@ -2,6 +2,7 @@
 title: "How Should We Evaluate Engineers' Abilities in the Age of AI?"
 description: "If someone achieves results using AI, does that reflect their own ability? I consider the abilities engineers need in the age of AI, focusing on judgment and adaptability."
 publishedAt: "2026-10-17T18:25:14+09:00"
+updatedAt: "2026-11-24T22:40:35+09:00"
 ---
 
 I have been delegating implementation to AI more often.
