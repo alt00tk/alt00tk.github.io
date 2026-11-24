@@ -2,6 +2,7 @@
 title: "Do More Options Lead to Better Decisions?"
 description: "More options seem to offer a better chance of finding what suits us, yet too many are said to make choosing harder. I explore the relationship between difficult choices and good decisions through psychology research."
 publishedAt: "2026-10-20T21:34:13+09:00"
+updatedAt: "2026-11-24T23:04:45+09:00"
 ---
 
 A tasting display offering 24 varieties of jam attracted more people than one offering six.
