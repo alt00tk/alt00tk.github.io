@@ -2,9 +2,10 @@
 title: "What Counts as a Good Decision?"
 description: "Does making a good decision mean continuing to search for the best option? Drawing on bounded rationality and decision research, I consider what supports a decision and when to stop investigating."
 publishedAt: "2026-10-24T19:57:30+09:00"
+updatedAt: "2026-11-24T22:46:50+09:00"
 ---
 
-After looking into [the number of options and the difficulty of choosing](/en/articles/choice-overload-and-good-decisions/), I was left with an unresolved question: what is a “good decision”?
+While looking into [the number of options and the difficulty of choosing](/en/articles/choice-overload-and-good-decisions/), I was left with a more fundamental question: what counts as a “good decision”?
 What I want to consider is rationality at the moment of deciding, rather than grading past decisions.
 
 ## Can a Decision Be Rational Without Finding the Optimal Solution?
@@ -36,12 +37,12 @@ Still, choosing an appropriate verification method also requires knowledge. And 
 ## Understanding Decision Quality Through Its Components
 
 [Spetzler et al. (2016)](https://doi.org/10.1002/9781119176657.ch02) identify six elements that support decision quality: framing, alternatives, reliable information, values and trade-offs, reasoning, and commitment to action.
-This gives us things we can examine before deciding, independently of the outcome of the choice.
+This framework identifies elements we can examine before making a decision, separately from its outcome.
 
 Drawing on these ideas, I want to focus on six aspects: alignment with purpose; alternatives; information and uncertainty; reasoning and trade-offs; how resources are allocated to investigation and when to stop; and the ability to adapt after deciding.
 This is my own reconstruction, including the last two elements, and has not been validated as a set of necessary and sufficient conditions.
 
 The potential loss and reversibility differ from one decision to another.
-I want to pay attention to which elements are missing and the value of filling those gaps.
-These may be useful as clues to what I have overlooked and when to stop investigating, rather than as criteria that guarantee a good decision.
+I want to pay attention to which elements are insufficient and how valuable it would be to address those gaps.
+These may be useful as clues to what I have overlooked and when to stop deliberating, rather than as criteria that guarantee a good decision.
 It remains to be tested how much weight each element should carry and whether this approach actually improves decision quality.
