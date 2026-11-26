@@ -2,6 +2,7 @@
 title: "Can We Really Learn from the Outcomes of Our Decisions?"
 description: "Even rational choices can lead to bad outcomes. What can we learn from experience without equating a bad outcome with a mistaken decision?"
 publishedAt: "2026-10-31T17:19:56+09:00"
+updatedAt: "2026-11-26T22:33:49+09:00"
 ---
 
 When I think about what makes a good decision, I feel the need to distinguish between its rationality at the time and how well it turns out.
