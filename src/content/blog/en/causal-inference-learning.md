@@ -2,6 +2,7 @@
 title: "How Much Can Causal Inference Tell Us About the Effects of AI Adoption?"
 description: "A change in development speed within the same team before and after AI adoption does not necessarily establish an AI effect. This learning log explores counterfactuals, comparison methods, and the limits of causal estimation."
 publishedAt: "2026-11-14T17:14:34+09:00"
+updatedAt: "2026-11-27T20:13:04+09:00"
 ---
 
 Suppose development lead time falls from 10 days to 7 days after adopting AI.
