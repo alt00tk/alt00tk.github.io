@@ -2,6 +2,7 @@
 title: "What Changes When We Change How Groups Make Decisions?"
 description: "Comparing different values alone cannot explain collective decisions. Learning about social choice theory led me to consider how principles of evaluation and decision procedures affect choices and behavior."
 publishedAt: "2026-11-15T20:14:54+09:00"
+updatedAt: "2026-11-27T20:17:47+09:00"
 ---
 
 When customer convenience conflicts with the maintenance burden on developers, what basis should we use to compare them, and who should decide?
@@ -55,7 +56,7 @@ The [Gibbard–Satterthwaite theorem](https://plato.stanford.edu/entries/social-
 
 ## Decision criteria also affect the information used to decide
 
-The first example concerns what we consider a desirable outcome; the second concerns how the procedure for choosing an outcome affects people's behavior.
+The veil of ignorance example concerns what we consider a desirable outcome; the voting example concerns how the procedure for choosing an outcome affects people's behavior.
 These are separate questions.
 
 For example, if we prioritize development proposals based on their estimated labor-hour savings, stakeholders may have an incentive to inflate those estimates.
