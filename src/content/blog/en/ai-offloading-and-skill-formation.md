@@ -2,6 +2,7 @@
 title: "What Do We Learn When We Leave Implementation to AI?"
 description: "How does delegating implementation to AI change how individuals learn? I look at research on distributed cognition, transfer of learning, and the assessment of abilities."
 publishedAt: "2026-11-22T21:42:08+09:00"
+updatedAt: "2026-11-27T20:30:22+09:00"
 ---
 
 When we leave implementation to AI, we have fewer chances to write code ourselves.
